@@ -7,8 +7,8 @@ import RPi.GPIO as GPIO
 class RobotController:
     sensor_front_r_id, sensor_front_l_id = 22, 27
     sensor_left_f_id, sensor_left_b_id = 10, 20
-    sensor_back_r_id, sensor_back_l_id = 12, 16
-    sensor_right_f_id, sensor_right_b_id = 4, 8
+    sensor_back_r_id, sensor_back_l_id = 8, 16
+    sensor_right_f_id, sensor_right_b_id = 4, 12
     tof_front_r, tof_front_l = VL53L0X.VL53L0X(address=0x2A), VL53L0X.VL53L0X(address=0x2B)
     tof_left_f, tof_left_b = VL53L0X.VL53L0X(address=0x2C), VL53L0X.VL53L0X(address=0x2D)
     tof_back_r, tof_back_l = VL53L0X.VL53L0X(address=0x2E), VL53L0X.VL53L0X(address=0x2F)
@@ -22,7 +22,8 @@ class RobotController:
     P_koef = 3.0
     right_distance = 150
     min_react_value = 30
-    wall_dist_deviation = 30
+    wall_dist_deviation = 40
+    min_hole_distance = 350
 
     def __init__(self):
         self.is_align_finished = False
@@ -198,19 +199,31 @@ class RobotController:
             return False
 
     def is_wall_right_b(self):
-        return self.tof_right_b.get_distance() < self.min_react_value
+        return self.tof_right_b.get_distance() < self.min_hole_distance
+
+    def is_wall_right_f(self):
+        return self.tof_right_f.get_distance() < self.min_hole_distance
 
     def is_wall_front_r(self):
-        return self.tof_front_r.get_distance() < self.min_react_value
+        return self.tof_front_r.get_distance() < self.min_hole_distance
+
+    def is_wall_front_l(self):
+        return self.tof_front_l.get_distance() < self.min_hole_distance
 
     def is_wall_left_f(self):
-        return self.tof_left_f.get_distance() < self.min_react_value
+        return self.tof_left_f.get_distance() < self.min_hole_distance
+
+    def is_wall_left_b(self):
+        return self.tof_left_b.get_distance() < self.min_hole_distance
 
     def is_wall_back_l(self):
-        return self.tof_back_l.get_distance() < self.min_react_value
+        return self.tof_back_l.get_distance() < self.min_hole_distance
+
+    def is_wall_back_r(self):
+        return self.tof_back_r.get_distance() < self.min_hole_distance
 
     def signal_to_move(self, a1, a2, b1, b2, c1, c2, d1, d2):
-        self.ser.write(str(int(a1)) + "q" + str(int(a2)) + "w" + str(int(b1)) + "e" + str(int(b2)) + "valera" + str(
+        self.ser.write(str(int(a1)) + "q" + str(int(a2)) + "w" + str(int(b1)) + "e" + str(int(b2)) + "r" + str(
             int(c1)) + "t" + str(int(c2)) + "y" + str(int(d1)) + "u" + str(int(d2)) + "i")
 
     def shut_down(self):
@@ -223,77 +236,98 @@ class RobotController:
 direction = 0
 valera = RobotController()
 hole = [False, False, False, False]
-step = 1.2
+corner_step = 0.3
+move_step = 1
+move_straight_for = 0.3
+
 while True:
     if direction == 0:
-        if hole[0]:
-            if valera.is_wall_right_b():
-                valera.move_straight(255)
-            elif not valera.is_wall_right_b():
-                hole[0] = False
-                valera.move_straight(255)
-                time.sleep(step)
-                direction = 3
+        print "rf " + str(valera.is_wall_right_f()) + "  rb " + str(valera.is_wall_right_b())
+
+        if not valera.is_wall_right_f():
+            hole[0] = True
+            valera.move_straight(255)
+            while hole[0]:
+                print "hole0 true"
+                if valera.is_wall_right_b():
+                    print "h1"
+                    valera.move_straight(255)
+                else:
+                    print "h2"
+                    hole[0] = False
+                    valera.move_straight(255)
+                    while not valera.is_wall_back_l():
+                        valera.move_right(255)
+
+                    direction = 3
         else:
             if valera.is_align_right_necessary():
+                print "a_r"
                 valera.do_right_align()
             if valera.is_align_finished:
+                print "a_f"
                 valera.move_straight(255)
+                time.sleep(move_straight_for)
             if valera.is_wall_front():
+                print "w_f"
                 valera.stop_move()
-                direction = 1
+                # direction = 1
 
     if direction == 1:
-        if hole[1]:
-            if valera.is_wall_front_r():
-                valera.move_left(255)
-            elif not valera.is_wall_front_r():
-                hole[1] = False
-                valera.move_left(255)
-                time.sleep(step)
-                direction = 0
+        print "D=1"
+        if not valera.is_wall_front_l():
+            hole[1] = True
+            while hole[1]:
+                if valera.is_wall_front_r():
+                    valera.move_left(255)
+                else:
+                    hole[1] = False
+                    valera.move_left(255)
+                    while not valera.is_wall_right_b():
+                        valera.move_straight(255)
+                    direction = 0
+
         else:
             if valera.is_align_front_necessary():
                 valera.do_front_align()
-            if valera.is_align_finished():
+            if valera.is_align_finished:
                 valera.move_left(255)
-            if valera.is_wall_left():
-                valera.stop_move()
-                direction = 2
 
     if direction == 2:
-        if hole[2]:
-            if valera.is_wall_left_f():
-                valera.move_back(255)
-            elif not valera.is_wall_left_f():
-                hole[2] = False
-                valera.move_back(255)
-                time.sleep(step)
-                direction = 1
+        print "D=2"
+        if not valera.is_wall_left_b():
+            hole[2] = True
+            while hole[2]:
+                if valera.is_wall_left_f():
+                    valera.move_back(255)
+                else:
+                    hole[2] = False
+                    valera.move_back(255)
+                    while not valera.is_wall_front_r():
+                        valera.move_left(255)
+                    direction = 1
         else:
             if valera.is_align_left_necessary():
                 valera.do_left_align()
             if valera.is_align_finished:
                 valera.move_back(255)
-            if valera.is_wall_back():
-                valera.stop_move()
-                direction = 3
 
     if direction == 3:
-        if hole[3]:
-            if valera.is_wall_back_l():
-                valera.move_right(255)
-            elif not valera.is_wall_back_l():
-                hole[3] = False
-                valera.move_right(255)
-                time.sleep(step)
-                direction = 2
+        print "D=3"
+        if not valera.is_wall_back_r():
+            hole[3] = True
+            while hole[3]:
+                if valera.is_wall_back_l():
+                    valera.move_right(255)
+                elif not valera.is_wall_back_l():
+                    hole[3] = False
+                    valera.move_right(255)
+                    while not valera.is_wall_left_f():
+                        valera.move_back(255)
+                    direction = 2
         else:
             if valera.is_align_back_necessary():
+                print "aaaa"
                 valera.do_back_align()
             if valera.is_align_finished:
                 valera.move_right(255)
-            if valera.is_wall_right():
-                valera.stop_move()
-                direction = 0
-
