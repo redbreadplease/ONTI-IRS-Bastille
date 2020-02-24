@@ -242,8 +242,6 @@ move_straight_for = 0.3
 
 while True:
     if direction == 0:
-        print "rf " + str(valera.is_wall_right_f()) + "  rb " + str(valera.is_wall_right_b())
-
         if not valera.is_wall_right_f():
             hole[0] = True
             valera.move_straight(255)
@@ -258,7 +256,6 @@ while True:
                     valera.move_straight(255)
                     while not valera.is_wall_back_l():
                         valera.move_right(255)
-
                     direction = 3
         else:
             if valera.is_align_right_necessary():
@@ -272,6 +269,9 @@ while True:
                 print "w_f"
                 valera.stop_move()
                 # direction = 1
+    else:
+        valera.stop_move()
+        exit()
 
     if direction == 1:
         print "D=1"
