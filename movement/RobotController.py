@@ -74,22 +74,22 @@ class RobotController:
                 self.move_left(mid - self.right_distance)
 
     def move_clockwise(self, value):
-        self.sensors_controller.signal_to_move(value, value, 0, value, 0, value, 0, 0)
+        self.sensors_controller.signal_to_move(0, 0, value, value, 0, value, 0, value)
 
     def move_counterclockwise(self, value):
-        self.sensors_controller.signal_to_move(0, 0, value, 0, value, 0, value, value)
+        self.sensors_controller.signal_to_move(value, value, 0, 0, value, 0, value, 0)
 
     def move_back(self, val):
-        self.sensors_controller.signal_to_move(0, val, val, 0, val, val, 0, 0)
+        self.sensors_controller.signal_to_move(val, 0, val, 0, val, 0, val, 0)
 
     def move_right(self, val):
-        self.sensors_controller.signal_to_move(val, val, 0, 0, val, 0, val, 0)
+        self.sensors_controller.signal_to_move(0, 0, val, 0, val, val, 0, val)
 
     def move_straight(self, val):
-        self.sensors_controller.signal_to_move(val, 0, 0, val, 0, 0, val, val)
+        self.sensors_controller.signal_to_move(0, val, 0, val, 0, val, 0, val)
 
     def move_left(self, val):
-        self.sensors_controller.signal_to_move(0, 0, val, val, 0, val, 0, val)
+        self.sensors_controller.signal_to_move(val, val, 0, val, 0, 0, val, 0)
 
     def is_wall_front(self):
         return (self.sensors_controller.get_front_r_dist() + self.sensors_controller.get_front_l_dist()) / 2. < \
@@ -112,33 +112,23 @@ class RobotController:
 
     def is_align_front_necessary(self):
         d1, d2 = self.sensors_controller.get_front_l_dist(), self.sensors_controller.get_front_r_dist()
-        if abs(d1 - d2) > self.min_react_value or abs(
-                (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation:
-            return True
-        else:
-            return False
+        return abs(d1 - d2) > self.min_react_value or abs(
+            (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation
 
     def is_align_left_necessary(self):
         d1, d2 = self.sensors_controller.get_left_b_dist(), self.sensors_controller.get_left_f_dist()
-        if abs(d1 - d2) > self.min_react_value or abs(
-                (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation:
-            return True
-        else:
-            return False
+        return abs(d1 - d2) > self.min_react_value or abs(
+            (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation
 
     def is_align_back_necessary(self):
         d1, d2 = self.sensors_controller.get_back_l_dist(), self.sensors_controller.get_back_r_dist()
-        if abs(d1 - d2) > self.min_react_value or abs((d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation:
-            return True
-        else:
-            return False
+        return abs(d1 - d2) > self.min_react_value or abs(
+            (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation
 
     def is_align_right_necessary(self):
         d1, d2 = self.sensors_controller.get_right_f_dist(), self.sensors_controller.get_right_b_dist()
-        if abs(d1 - d2) > self.min_react_value or abs((d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation:
-            return True
-        else:
-            return False
+        return abs(d1 - d2) > self.min_react_value or abs(
+            (d1 + d2) / 2. - self.right_distance) > self.wall_dist_deviation
 
     def is_wall_right_b(self):
         return self.sensors_controller.get_right_b_dist() < self.min_hole_distance
@@ -165,84 +155,130 @@ class RobotController:
         return self.sensors_controller.get_back_r_dist() < self.min_hole_distance
 
     def is_front_l_diff_with_prev_means_cliff(self):
-        if self.sensors_controller.tof_front_l.get_distance() - self.sensors_controller.prev_front_l_value > self.min_cliff_value:
-            return self.sensors_controller.get_front_l_dist() - self.sensors_controller.prev_front_l_value > self.min_cliff_value
+        if self.sensors_controller.tof_front_l.get_distance() - self.sensors_controller.prev_front_l_values[
+            0] > self.min_cliff_value:
+            return self.sensors_controller.get_front_l_dist() - self.sensors_controller.prev_front_l_values[
+                0] > self.min_cliff_value
 
     def is_left_b_diff_with_prev_means_cliff(self):
-        if self.sensors_controller.tof_left_b.get_distance() - self.sensors_controller.prev_left_b_value > self.min_cliff_value:
-            return self.sensors_controller.get_left_b_dist() - self.sensors_controller.prev_left_b_value > self.min_cliff_value
+        if self.sensors_controller.tof_left_b.get_distance() - self.sensors_controller.prev_left_b_values[
+            0] > self.min_cliff_value:
+            return self.sensors_controller.get_left_b_dist() - self.sensors_controller.prev_left_b_values[
+                0] > self.min_cliff_value
 
     def is_back_r_diff_with_prev_means_cliff(self):
-        if self.sensors_controller.tof_back_r.get_distance() - self.sensors_controller.prev_back_r_value > self.min_cliff_value:
-            return self.sensors_controller.get_back_r_dist() - self.sensors_controller.prev_back_r_value > self.min_cliff_value
+        if self.sensors_controller.tof_back_r.get_distance() - self.sensors_controller.prev_back_r_values[
+            0] > self.min_cliff_value:
+            return self.sensors_controller.get_back_r_dist() - self.sensors_controller.prev_back_r_values[
+                0] > self.min_cliff_value
 
     def is_right_f_diff_with_prev_means_cliff(self):
-        if self.sensors_controller.tof_right_f.get_distance() - self.sensors_controller.prev_right_f_value > self.min_cliff_value:
-            return self.sensors_controller.get_right_f_dist() - self.sensors_controller.prev_right_f_value > self.min_cliff_value
+        if self.sensors_controller.tof_right_f.get_distance() - self.sensors_controller.prev_right_f_values[
+            0] > self.min_cliff_value:
+            return self.sensors_controller.get_right_f_dist() - self.sensors_controller.prev_right_f_values[
+                0] > self.min_cliff_value
 
     def is_front_diff_with_prev_means_cliff(self):
-        if self.sensors_controller.tof_front_l.get_distance() - self.sensors_controller.prev_front_l_value > self.min_cliff_value:
-            return self.sensors_controller.get_front_l_dist() - self.sensors_controller.prev_front_l_value > self.min_cliff_value
+        if self.sensors_controller.tof_front_l.get_distance() - self.sensors_controller.prev_front_l_values[
+            0] > self.min_cliff_value:
+            return self.sensors_controller.get_front_l_dist() - self.sensors_controller.prev_front_l_values[
+                0] > self.min_cliff_value
 
     def go_around_outside_corner_f_r(self):
         while self.is_wall_right_b():
-            self.move_straight(255)
+            self.move_straight(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_back_r():
-            self.move_right(255)
+            self.move_right(1023)
         while not self.is_wall_back_l():
-            self.move_right(255)
+            self.move_right(1023)
         time.sleep(self.corner_step)
+        self.sensors_controller.get_back_l_dist()
+        self.sensors_controller.get_back_r_dist()
 
     def go_around_outside_corner_l_s(self):
         while self.is_wall_front_r():
-            self.move_left(255)
+            self.move_left(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_right_f():
-            self.move_straight(255)
+            self.move_straight(1023)
         while not self.is_wall_right_b():
-            self.move_straight(255)
+            self.move_straight(1023)
         time.sleep(self.corner_step)
+        self.sensors_controller.get_right_b_dist()
+        self.sensors_controller.get_right_f_dist()
 
     def go_around_outside_corner_b_l(self):
         while self.is_wall_left_f():
-            self.move_back(255)
+            self.move_back(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_front_l():
-            self.move_left(255)
+            self.move_left(1023)
         while not self.is_wall_front_r():
-            self.move_left(255)
+            self.move_left(1023)
         time.sleep(self.corner_step)
+        self.sensors_controller.get_front_l_dist()
+        self.sensors_controller.get_front_r_dist()
 
     def go_around_outside_corner_r_b(self):
         while self.is_wall_back_l():
-            self.move_right(255)
+            self.move_right(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_left_b():
-            self.move_back(255)
+            self.move_back(1023)
         while not self.is_wall_left_f():
-            self.move_back(255)
+            self.move_back(1023)
         time.sleep(self.corner_step)
+        self.sensors_controller.get_left_f_dist()
+        self.sensors_controller.get_left_b_dist()
 
     def go_around_outside_corner_s_l(self):
         while self.is_wall_left_b():
-            self.move_straight(255)
+            self.move_straight(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_back_l():
-            self.move_left(255)
+            self.move_left(1023)
         while not self.is_wall_back_r():
-            self.move_left(255)
+            self.move_left(1023)
         time.sleep(self.corner_step)
 
     def go_around_outside_corner_l_f(self):
         while self.is_wall_front_r():
-            self.move_left(255)
+            self.move_left(1023)
         time.sleep(self.corner_step)
         while not self.is_wall_left_f():
-            self.move_straight(255)
+            self.move_straight(1023)
         while not self.is_wall_left_b():
-            self.move_straight(255)
+            self.move_straight(1023)
         time.sleep(self.corner_step)
+
+    def is_front_cliff_started(self):
+        return self.robot_logic.does_mean_cliff_started(
+            self.sensors_controller.prev_front_l_values[0], self.sensors_controller.get_front_l_dist(),
+            self.sensors_controller.prev_front_r_values[0], self.sensors_controller.get_front_r_dist()
+        ) or self.robot_logic.does_diff_mean_cliff(self.sensors_controller.get_front_l_dist(),
+                                                   self.sensors_controller.get_front_r_dist())
+
+    def is_left_cliff_started(self):
+        return self.robot_logic.does_mean_cliff_started(
+            self.sensors_controller.prev_left_b_values[0], self.sensors_controller.get_left_b_dist(),
+            self.sensors_controller.prev_left_f_values[0], self.sensors_controller.get_left_f_dist()
+        ) or self.robot_logic.does_diff_mean_cliff(self.sensors_controller.get_left_b_dist(),
+                                                   self.sensors_controller.get_left_f_dist())
+
+    def is_back_cliff_started(self):
+        return self.robot_logic.does_mean_cliff_started(
+            self.sensors_controller.prev_back_r_values[0], self.sensors_controller.get_back_r_dist(),
+            self.sensors_controller.prev_back_l_values[0], self.sensors_controller.get_back_l_dist()
+        ) or self.robot_logic.does_diff_mean_cliff(self.sensors_controller.get_back_r_dist(),
+                                                   self.sensors_controller.get_back_l_dist())
+
+    def is_right_cliff_started(self):
+        return self.robot_logic.does_mean_cliff_started(
+            self.sensors_controller.prev_right_f_values[0], self.sensors_controller.get_right_f_dist(),
+            self.sensors_controller.prev_right_b_values[0], self.sensors_controller.get_right_b_dist()
+        ) or self.robot_logic.does_diff_mean_cliff(self.sensors_controller.get_right_b_dist(),
+                                                   self.sensors_controller.get_right_f_dist())
 
     def shut_down(self):
         self.sensors_controller.shut_down()
