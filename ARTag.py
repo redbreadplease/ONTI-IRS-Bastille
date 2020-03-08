@@ -1,9 +1,5 @@
 from PIL import Image, ImageFilter, ImageDraw
 from math import sqrt
-import sys
-import os
-
-sys.path.insert(0, os.pardir)
 
 FILENAME = "art3.jpg"
 

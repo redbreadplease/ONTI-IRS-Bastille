@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import serial
-import sys
-import os
 
-sys.path.insert(0, os.pardir)
+from RobotController import RobotController
 
 dist_drive = 100
 
