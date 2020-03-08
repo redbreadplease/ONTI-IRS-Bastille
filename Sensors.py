@@ -117,6 +117,6 @@ class SensorsChecker(object):
             GPIO.output(sensor_id, GPIO.HIGH)
 
 
-class SensorsController(SensorsChecker, ):
+class SensorsController(SensorsChecker):
     def __init__(self):
         super(SensorsController, self).__init__()
