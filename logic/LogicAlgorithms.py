@@ -20,6 +20,9 @@ class LogicAlgorithms:
     def does_side_sensors_difference_means_go_from_wall(self, mid_value):
         return mid_value > self.right_align_distance - self.align_dist_deviation
 
+    def is_wall(self, d1, d2):
+        return self.get_mid_value(d1, d2) < self.right_align_distance - self.align_dist_deviation
+
     @staticmethod
     def get_mid_value(a, b):
         return (a + b) / 2.
