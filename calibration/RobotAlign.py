@@ -1,4 +1,8 @@
 from RobotController import RobotController
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 rb = RobotController()
 

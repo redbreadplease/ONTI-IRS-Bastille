@@ -1,3 +1,9 @@
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
+
+
 class SelfLocation:
     map = [[' ', '-', ' ', '-', ' ', '-', ' ', '-', ' ', '-', ' ', '-', ' ', ' ', ' ', '-', ' '],
            ['|', '0', ' ', '0', ' ', '0', ' ', '0', ' ', '0', ' ', '0', '|', ' ', '|', '0', '|'],
@@ -68,10 +74,10 @@ class SelfLocation:
         temp_j = j
         for num in range(len(movement_directions)):
             if movement_directions == 0:
-                if map[temp_i-1][temp_j] == '0' || map[i-1][j] == ' ':
+                if map[temp_i - 1][temp_j] == '0' | | map[i - 1][j] == ' ':
                     temp_i -= 1
             elif movement_directions == 1:
-                
+
             elif movement_directions == 1:
 
             elif movement_directions == 1:

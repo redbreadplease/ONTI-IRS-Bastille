@@ -1,6 +1,10 @@
 from movement.MovementAlgorithms import MovementAlgorithms
 from sensors.SensorsChecker import SensorsChecker
 from logic.LogicAlgorithms import LogicAlgorithms
+import sys
+import os
+
+sys.path.insert(0, os.curdir)
 
 
 class RobotController(SensorsChecker, MovementAlgorithms, LogicAlgorithms):

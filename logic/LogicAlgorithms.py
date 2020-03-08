@@ -1,3 +1,9 @@
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
+
+
 class LogicAlgorithms:
     p_coefficient = 3.
     min_round_react_align_value = 10

@@ -1,6 +1,10 @@
 import VL53L0X
 import RPi.GPIO as GPIO
 import time
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 
 class SensorsChecker:

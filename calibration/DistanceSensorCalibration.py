@@ -1,6 +1,10 @@
 # coding=utf-8
 
 from SensorsController import SensorsController
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 CALIBRATION_FILENAME = "distSensorsCalibration.txt"
 valera_sensors = SensorsController()

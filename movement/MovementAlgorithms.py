@@ -1,13 +1,16 @@
 from movement.AppliedMovement import AppliedMovement
 from sensors.SensorsChecker import SensorsChecker
 from logic.LogicAlgorithms import LogicAlgorithms
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 
 class MovementAlgorithms(AppliedMovement):
     def __init__(self):
         self.sensors_checker = SensorsChecker()
         self.robot_logic = LogicAlgorithms()
-
 
     def do_front_align(self):
         while True:

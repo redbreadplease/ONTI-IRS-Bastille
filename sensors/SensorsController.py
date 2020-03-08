@@ -1,4 +1,8 @@
 from sensors.SensorsChecker import SensorsChecker
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 
 class SensorsController(SensorsChecker, ):

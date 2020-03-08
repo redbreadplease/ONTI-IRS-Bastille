@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 import serial
+import sys
+import os
+
+sys.path.insert(0, os.pardir)
 
 
 class OpticalFlowController:
