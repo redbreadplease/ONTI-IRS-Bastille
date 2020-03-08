@@ -1,7 +1,7 @@
 import serial
 
 
-class AppliedMovement:
+class AppliedMovement(object):
     def __init__(self):
         self.ser = serial.Serial(
             port='/dev/ttyS0',

@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 import time
 
 
-class SensorsChecker:
+class SensorsChecker(object):
     CALIBRATION_FILENAME = "distSensorsCalibration.txt"
 
     sensor_front_r_id, sensor_front_l_id = 12, 5

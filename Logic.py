@@ -1,4 +1,4 @@
-class LogicAlgorithms:
+class LogicAlgorithms(object):
     p_coefficient = 3.
     min_round_react_align_value = 10
     right_align_distance = 110
