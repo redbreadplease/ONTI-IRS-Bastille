@@ -115,7 +115,7 @@ class SensorsChecker:
         return self.prev_right_f_values[-1]
 
     def shut_down(self):
-        self.tof_front_r.stop_ranging()
-        GPIO.output(self.sensor_front_l_id, GPIO.LOW)
-        self.tof_front_l.stop_ranging()
-        GPIO.output(self.sensor_front_r_id, GPIO.LOW)
+        for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
+            sensor_tof.stop_ranging()
+            time.sleep(0.5)
+            GPIO.output(sensor_id, GPIO.HIGH)
