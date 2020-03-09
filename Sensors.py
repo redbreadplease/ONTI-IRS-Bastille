@@ -26,8 +26,6 @@ class SensorsChecker(object):
                             [sensor_back_r_id, tof_back_r], [sensor_back_l_id, tof_back_l]]
 
     def __init__(self):
-        super(object, self).__init__()
-
         self.f_r_additive_dist, self.l_f_additive_dist, self.b_l_additive_dist, self.r_b_additive_dist = 0, 0, 0, 0
         calibration_file = open(self.CALIBRATION_FILENAME)
         calibration_file_context = calibration_file.read().split("\n")
