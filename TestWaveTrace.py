@@ -35,6 +35,9 @@ def update_map_builder():
     mb.update(rd, mb.get_cells_driven_since_last_time_amount(), rc.get_walls_availability_array())
 
 
+# the first map init
+mb.update(5, 0, [rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()])
+
 while not mb.is_map_built():
     if rd == 0:
         rc.while_state_move_straight()

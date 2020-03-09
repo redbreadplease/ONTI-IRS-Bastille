@@ -55,10 +55,10 @@ class SensorsChecker(object):
         for sensor_id, _ in self.sensors_ids_and_tofs:
             GPIO.setup(sensor_id, GPIO.OUT)
             GPIO.output(sensor_id, GPIO.LOW)
-        time.sleep(0.5)
+        time.sleep(0.3)
         for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
             GPIO.output(sensor_id, GPIO.HIGH)
-            time.sleep(0.5)
+            time.sleep(0.3)
             sensor_tof.start_ranging(4)
 
         self.timing = self.tof_front_r.get_timing()

@@ -16,22 +16,22 @@ class AppliedMovement(object):
         )'''
 
     def move_clockwise(self, val):
-        self.signal_to_move(0, 0, val, val, 0, val, 0, val)
+        self.signal_to_move(0, 0, val, 0, val, val, 0, val)
 
     def move_counterclockwise(self, val):
-        self.signal_to_move(val, val, 0, 0, val, 0, val, 0)
+        self.signal_to_move(val, val, 0, val, 0, 0, val, 0)
 
     def move_back(self, val):
         self.signal_to_move(val, 0, val, 0, val, 0, val, 0)
 
     def move_right(self, val):
-        self.signal_to_move(0, 0, val, 0, val, val, 0, val)
+        self.signal_to_move(val, val, 0, 0, val, val, 0, 0)
 
     def move_straight(self, val):
         self.signal_to_move(0, val, 0, val, 0, val, 0, val)
 
     def move_left(self, val):
-        self.signal_to_move(val, val, 0, val, 0, 0, val, 0)
+        self.signal_to_move(0, 0, val, val, 0, 0, val, val)
 
     def stop_move(self):
         self.signal_to_move(0, 0, 0, 0, 0, 0, 0, 0)
