@@ -7,7 +7,7 @@ import serial
 class OpticalFlowChecker(object):
 
     def __init__(self):
-        self.prev_optical_flow_x, self.prev_optical_flow_y = None, None
+        self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
 
     @staticmethod
     def get_optical_flow_row_values():
@@ -37,9 +37,6 @@ class OpticalFlowChecker(object):
         return x_now, y_now
 
     def get_bias_x_y(self):
-        if self.prev_optical_flow_x is None and self.prev_optical_flow_y is None:
-            self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
-
         x_now, y_now = self.get_optical_flow_row_values()
         bias_x, bias_y = self.prev_optical_flow_x - x_now, self.prev_optical_flow_y - y_now
 
