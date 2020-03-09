@@ -1,4 +1,4 @@
-from RobotController import RobotController
+from MainController import RobotController
 
 rb = RobotController()
 

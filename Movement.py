@@ -1,4 +1,6 @@
 import serial
+import time
+from Sensors import SensorsController
 
 
 class AppliedMovement(object):
@@ -38,76 +40,126 @@ class AppliedMovement(object):
             int(c1)) + "t" + str(int(c2)) + "y" + str(int(d1)) + "u" + str(int(d2)) + "i")
 
 
-class MovementAlgorithms(AppliedMovement):
+class MovementAlgorithms(AppliedMovement, SensorsController):
+    just_move_value = 511
+    outside_corner_movement_time = 0.2
+
     def __init__(self):
-        super().__init__()
-        self.sensors_checker = SensorsChecker()
-        self.robot_logic = LogicAlgorithms()
+        super(AppliedMovement, self).__init__()
+        super(SensorsController, self).__init__()
 
     def do_front_align(self):
         while True:
-            d1, d2 = self.sensors_checker.get_front_l_dist(), self.sensors_checker.get_front_r_dist()
-            err = self.robot_logic.get_align_err(d1=d1, d2=d2)
-            if self.robot_logic.does_side_sensors_difference_means_round_align(d1, d2):
+            d1, d2 = self.get_front_l_dist(), self.get_front_r_dist()
+            err = self.get_align_err(d1=d1, d2=d2)
+            if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_clockwise(err)
-            elif self.robot_logic.does_side_sensors_difference_means_round_align(d2, d1):
+            elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_counterclockwise(err)
             else:
-                mid = self.robot_logic.get_mid_value(d1, d2)
-                if self.robot_logic.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_straight(mid - self.robot_logic.right_align_distance)
-                elif self.robot_logic.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_back(mid - self.robot_logic.right_align_distance)
+                mid = self.get_mid_value(d1, d2)
+                if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
+                    self.move_straight(mid - self.right_align_distance)
+                elif self.does_side_sensors_difference_means_go_from_wall(mid):
+                    self.move_back(mid - self.right_align_distance)
                 else:
                     return
 
     def do_left_align(self):
         while True:
-            d1, d2 = self.sensors_checker.get_left_f_dist(), self.sensors_checker.get_left_b_dist()
-            err = self.robot_logic.get_align_err(d1=d1, d2=d2)
-            if self.robot_logic.does_side_sensors_difference_means_round_align(d1, d2):
+            d1, d2 = self.get_left_f_dist(), self.get_left_b_dist()
+            err = self.get_align_err(d1=d1, d2=d2)
+            if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
-            elif self.robot_logic.does_side_sensors_difference_means_round_align(d2, d1):
+            elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
-                mid = self.robot_logic.get_mid_value(d1, d2)
-                if self.robot_logic.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_left(mid - self.robot_logic.right_align_distance)
-                elif self.robot_logic.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_right(mid - self.robot_logic.right_align_distance)
+                mid = self.get_mid_value(d1, d2)
+                if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
+                    self.move_left(mid - self.right_align_distance)
+                elif self.does_side_sensors_difference_means_go_from_wall(mid):
+                    self.move_right(mid - self.right_align_distance)
                 else:
                     return
 
     def do_back_align(self):
         while True:
-            d1, d2 = self.sensors_checker.get_back_l_dist(), self.sensors_checker.get_back_r_dist()
-            err = self.robot_logic.get_align_err(d1=d1, d2=d2)
-            if self.robot_logic.does_side_sensors_difference_means_round_align(d1, d2):
+            d1, d2 = self.get_back_l_dist(), self.get_back_r_dist()
+            err = self.get_align_err(d1=d1, d2=d2)
+            if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
-            elif self.robot_logic.does_side_sensors_difference_means_round_align(d2, d1):
+            elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
-                mid = self.robot_logic.get_mid_value(d1, d2)
-                if self.robot_logic.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_back(mid - self.robot_logic.right_align_distance)
-                elif self.robot_logic.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_straight(mid - self.robot_logic.right_align_distance)
+                mid = self.get_mid_value(d1, d2)
+                if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
+                    self.move_back(mid - self.right_align_distance)
+                elif self.does_side_sensors_difference_means_go_from_wall(mid):
+                    self.move_straight(mid - self.right_align_distance)
                 else:
                     return
 
     def do_right_align(self):
         while True:
-            d1, d2 = self.sensors_checker.get_right_b_dist(), self.sensors_checker.get_right_f_dist()
-            err = self.robot_logic.get_align_err(d1=d1, d2=d2)
-            if self.robot_logic.does_side_sensors_difference_means_round_align(d1, d2):
+            d1, d2 = self.get_right_b_dist(), self.get_right_f_dist()
+            err = self.get_align_err(d1=d1, d2=d2)
+            if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
-            elif self.robot_logic.does_side_sensors_difference_means_round_align(d2, d1):
+            elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
-                mid = self.robot_logic.get_mid_value(d1, d2)
-                if self.robot_logic.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_right(mid - self.robot_logic.right_align_distance)
-                elif self.robot_logic.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_left(mid - self.robot_logic.right_align_distance)
+                mid = self.get_mid_value(d1, d2)
+                if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
+                    self.move_right(mid - self.right_align_distance)
+                elif self.does_side_sensors_difference_means_go_from_wall(mid):
+                    self.move_left(mid - self.right_align_distance)
                 else:
                     return
+
+    def leave_front_l_around_corner(self):
+        while self.is_wall_front_r() or self.is_wall_front_l():
+            self.move_left(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_front_r_around_corner(self):
+        while self.is_wall_front_r() or self.is_wall_front_l():
+            self.move_right(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_right_f_around_corner(self):
+        while self.is_wall_right_f() or self.is_wall_right_b():
+            self.move_straight(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_right_b_around_corner(self):
+        while self.is_wall_right_f() or self.is_wall_right_b():
+            self.move_back(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_back_r_around_corner(self):
+        while self.is_wall_back_l() or self.is_wall_back_r():
+            self.move_right(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_back_l_around_corner(self):
+        while self.is_wall_back_l() or self.is_wall_back_r():
+            self.move_left(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_left_b_around_corner(self):
+        while self.is_wall_left_b() or self.is_wall_left_f():
+            self.move_back(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()
+
+    def leave_left_f_around_corner(self):
+        while self.is_wall_left_b() or self.is_wall_left_f():
+            self.move_straight(self.just_move_value)
+        time.sleep(self.outside_corner_movement_time)
+        self.stop_move()

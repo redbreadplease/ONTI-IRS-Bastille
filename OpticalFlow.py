@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+from math import sqrt
+
 import serial
 
 
 class OpticalFlowController:
     def __init__(self):
-        ser = serial.Serial(
+        self.ser = serial.Serial(
             port='/dev/ttyS0',
             baudrate=9600,
             parity=serial.PARITY_NONE,
@@ -12,27 +14,36 @@ class OpticalFlowController:
             bytesize=serial.EIGHTBITS,
             timeout=0.1
         )
-        # ser = serial.Serial ("/dev/ttyS0", 9600)
+        self.prev_x, self.prev_y = self.get_values_now()
 
-    def get_bias(self):
-        x = ""
-        a = ""
-        while a != "x":
-            a = ser.read()
-            if (a != "x"):
-                x = x + a
-        y = ""
-        a = ""
-        while a != "y":
-            a = ser.read()
-            if (a != "y"):
-                y = y + a
-        print("x" + str(x))
-        print("y" + str(y))
-        err = (2650 - int(y)) * 1.2
-        if (err > 400):
-            err = 400
-        if (err < 0):
-            err = 0
-        upr = "0q" + str(err) + "w0e" + str(err) + "r0t" + str(err) + "y0u" + str(err) + "i"
-        ser.write(upr)
+    def get_values_now(self):
+        x_now, y_now = "", ""
+        while True:
+            symbol = self.ser.read()
+            if symbol != "x":
+                x_now += symbol
+            else:
+                x_now = int(x_now)
+                break
+        while True:
+            symbol = self.ser.read()
+            if symbol != "y":
+                y_now += symbol
+            else:
+                y_now = int(y_now)
+                break
+        return x_now, y_now
+
+    def get_bias_x_y(self):
+        x_now, y_now = self.get_values_now()
+        return self.prev_x - x_now, self.prev_y - y_now
+
+    def get_bias_distance(self):
+        bias_x, bias_y = self.get_bias_x_y()
+        return sqrt(bias_x ** 2 + bias_y ** 2)
+
+    def reset(self):
+        self.prev_x, self.prev_y = self.get_values_now()
+
+    def get_cells_driven_since_last_time_amount(self):
+        pass

@@ -1,6 +1,7 @@
 import VL53L0X
 import RPi.GPIO as GPIO
 import time
+from Logic import LogicAlgorithms
 
 
 class SensorsChecker(object):
@@ -117,6 +118,58 @@ class SensorsChecker(object):
             GPIO.output(sensor_id, GPIO.HIGH)
 
 
-class SensorsController(SensorsChecker):
+class SensorsController(SensorsChecker, LogicAlgorithms):
     def __init__(self):
         super(SensorsController, self).__init__()
+        super(LogicAlgorithms, self).__init__()
+
+    def is_wall_front(self):
+        return self.is_wall(self.get_front_l_dist(), self.get_front_r_dist())
+
+    def is_wall_left(self):
+        return self.is_wall(self.get_left_f_dist(), self.get_left_b_dist())
+
+    def is_wall_back(self):
+        return self.is_wall(self.get_back_l_dist(), self.get_back_r_dist())
+
+    def is_wall_right(self):
+        return self.is_wall(self.get_right_f_dist(), self.get_right_b_dist())
+
+    def is_wall_front_l(self):
+        return self.is_wall(self.get_front_l_dist())
+
+    def is_wall_front_r(self):
+        return self.is_wall(self.get_front_r_dist())
+
+    def is_wall_left_f(self):
+        return self.is_wall(self.get_left_f_dist())
+
+    def is_wall_left_b(self):
+        return self.is_wall(self.get_left_b_dist())
+
+    def is_wall_back_r(self):
+        return self.is_wall(self.get_back_r_dist())
+
+    def is_wall_back_l(self):
+        return self.is_wall(self.get_back_l_dist())
+
+    def is_wall_right_b(self):
+        return self.is_wall(self.get_right_b_dist())
+
+    def is_wall_right_f(self):
+        return self.is_wall(self.get_right_f_dist())
+
+    def is_cliff_front_started(self):
+        pass
+
+    def is_cliff_left_started(self):
+        pass
+
+    def is_cliff_back_started(self):
+        pass
+
+    def is_cliff_right_started(self):
+        pass
+
+    def get_walls_availability_array(self):
+        return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
