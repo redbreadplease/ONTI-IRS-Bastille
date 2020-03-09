@@ -4,8 +4,10 @@ from OpticalFlow import OpticalFlowController
 
 class RobotController(MovementAlgorithms, OpticalFlowController):
     def __init__(self):
-        super(MovementAlgorithms, self).__init__()
         super(OpticalFlowController, self).__init__()
+        super(MovementAlgorithms, self).__init__()
+
+        self.prev_optical_flow_x, self.prev_optical_flow_y = None, None
 
     def do_any_align(self):
         if self.is_wall_front():
