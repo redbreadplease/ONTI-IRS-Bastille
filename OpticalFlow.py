@@ -4,7 +4,7 @@ from math import sqrt
 import serial
 
 
-class OpticalFlowController:
+class OpticalFlowController(object):
     def __init__(self):
         self.ser = serial.Serial(
             port='/dev/ttyS0',

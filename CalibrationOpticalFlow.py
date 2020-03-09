@@ -1,54 +1,39 @@
 #!/usr/bin/env python
-import serial
+import time
 
 from MainController import RobotController
 
-dist_drive = 150
+right_dist_drive = 150
 
 robot_controller = RobotController()
 
-ser = serial.Serial(
-    port='/dev/ttyS0',
-    baudrate=9600,
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,
-    timeout=0.1
-)
+dist_now = 0
 
-prev_x, prev_y = 0, 0
-dist = 0
+inverse_moving, moving_plus = False, True
 
 try:
     robot_controller.move_straight(255)
-
+    time.sleep(0.1)
+    if robot_controller.get_bias_x_y()[0] < 0:
+        inverse_moving = True
     while True:
-        x, y = "", ""
-        while True:
-            symbol = ser.read()
-            if symbol != "x":
-                x = x + symbol
+        dist_now += robot_controller.get_bias_x_y()[0]
+
+        if dist_now > right_dist_drive:
+            moving_plus = False
+        elif dist_now < -right_dist_drive:
+            moving_plus = True
+
+        if not inverse_moving:
+            if moving_plus:
+                robot_controller.move_straight(255)
             else:
-                x = int(x)
-                break
-        while True:
-            symbol = ser.read()
-            if symbol != "y":
-                y = y + symbol
+                robot_controller.move_back(255)
+        else:
+            if not moving_plus:
+                robot_controller.move_straight(255)
             else:
-                y = int(y)
-                break
-        print("x" + str(x) + " y" + str(y))
+                robot_controller.move_back(255)
 
-        if prev_x and prev_y:
-            dist += (prev_y - y)
-        prev_x, prev_y = x, y
-
-        print("dist: " + str(dist))
-
-        if dist < dist_drive:
-            robot_controller.move_straight(255)
-        elif -dist > dist_drive:
-            robot_controller.move_back(255)
 finally:
     robot_controller.stop_move()
