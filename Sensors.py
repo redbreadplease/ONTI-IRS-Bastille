@@ -60,7 +60,7 @@ class SensorsChecker(object):
         except ValueError:
             print("No calibration sensors file found")
         self.prev_front_r_values, self.prev_front_l_values, self.prev_left_f_values, self.prev_left_b_values, \
-        self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
+            self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
             = list(), list(), list(), list(), list(), list(), list(), list()
 
     def get_front_r_dist(self):

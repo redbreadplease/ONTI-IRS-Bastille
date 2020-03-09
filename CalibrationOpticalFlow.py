@@ -19,33 +19,36 @@ ser = serial.Serial(
 prev_x, prev_y = 0, 0
 dist = 0
 
-robot_controller.move_straight(255)
+try:
+    robot_controller.move_straight(255)
 
-while True:
-    x, y = "", ""
     while True:
-        symbol = ser.read()
-        if symbol != "x":
-            x = x + symbol
-        else:
-            x = int(x)
-            break
-    while True:
-        symbol = ser.read()
-        if symbol != "y":
-            y = y + symbol
-        else:
-            y = int(y)
-            break
-    print("x" + str(x) + " y" + str(y))
+        x, y = "", ""
+        while True:
+            symbol = ser.read()
+            if symbol != "x":
+                x = x + symbol
+            else:
+                x = int(x)
+                break
+        while True:
+            symbol = ser.read()
+            if symbol != "y":
+                y = y + symbol
+            else:
+                y = int(y)
+                break
+        print("x" + str(x) + " y" + str(y))
 
-    if prev_x and prev_y:
-        dist += (prev_y - y)
-    prev_x, prev_y = x, y
+        if prev_x and prev_y:
+            dist += (prev_y - y)
+        prev_x, prev_y = x, y
 
-    print("dist: " + str(dist))
+        print("dist: " + str(dist))
 
-    if dist < dist_drive:
-        robot_controller.move_back(255)
-    elif -dist > dist_drive:
-        robot_controller.move_straight(255)
+        if dist < dist_drive:
+            robot_controller.move_straight(255)
+        elif -dist > dist_drive:
+            robot_controller.move_back(255)
+finally:
+    robot_controller.stop_move()
