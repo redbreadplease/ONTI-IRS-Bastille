@@ -5,6 +5,7 @@ import serial
 
 
 class OpticalFlowChecker(object):
+
     def __init__(self):
         self.prev_optical_flow_x, self.prev_optical_flow_y = None, None
 
@@ -53,22 +54,22 @@ class OpticalFlowChecker(object):
     def reset(self):
         self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
 
-    def get_cells_driven_since_last_time_amount(self):
-        pass
-
 
 class OpticalFlowController(OpticalFlowChecker):
     def __init__(self):
         super(OpticalFlowChecker, self).__init__()
 
     def get_front_bias(self):
-        return self.get_bias_x_y()[1]
+        return -self.get_bias_x_y()[1]
 
     def get_left_bias(self):
         return self.get_bias_x_y()[0]
 
     def get_back_bias(self):
-        return -self.get_bias_x_y()[1]
+        return self.get_bias_x_y()[1]
 
     def get_right_bias(self):
         return -self.get_bias_x_y()[0]
+
+    def get_cells_driven_since_last_time_amount(self):
+        pass

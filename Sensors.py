@@ -8,9 +8,9 @@ class SensorsChecker(object):
     CALIBRATION_FILENAME = "distSensorsCalibration.txt"
 
     sensor_front_r_id, sensor_front_l_id = 12, 5
-    sensor_left_f_id, sensor_left_b_id = 11, 22
-    sensor_back_r_id, sensor_back_l_id = 27, 17
-    sensor_right_f_id, sensor_right_b_id = 6, 18
+    sensor_left_f_id, sensor_left_b_id = 11, 9
+    sensor_back_r_id, sensor_back_l_id = 18, 27
+    sensor_right_f_id, sensor_right_b_id = 13, 17
     tof_front_r, tof_front_l = VL53L0X.VL53L0X(address=0x2A), VL53L0X.VL53L0X(address=0x2B)
     tof_left_f, tof_left_b = VL53L0X.VL53L0X(address=0x2C), VL53L0X.VL53L0X(address=0x2D)
     tof_back_r, tof_back_l = VL53L0X.VL53L0X(address=0x2E), VL53L0X.VL53L0X(address=0x2F)
