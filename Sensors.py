@@ -166,9 +166,21 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         if self.tof_front_l.get_distance() - self.prev_front_l_values[0] > self.min_cliff_value:
             return self.get_front_l_dist() - self.prev_front_l_values[0] > self.min_cliff_value
 
+    def is_cliff_front_r_started(self):
+        if self.tof_front_r.get_distance() - self.prev_front_r_values[0] > self.min_cliff_value:
+            return self.get_front_r_dist() - self.prev_front_r_values[0] > self.min_cliff_value
+
     def is_cliff_left_b_started(self):
         if self.tof_left_b.get_distance() - self.prev_left_b_values[0] > self.min_cliff_value:
             return self.get_left_b_dist() - self.prev_left_b_values[0] > self.min_cliff_value
+
+    def is_cliff_left_f_started(self):
+        if self.tof_left_f.get_distance() - self.prev_left_f_values[0] > self.min_cliff_value:
+            return self.get_left_f_dist() - self.prev_left_f_values[0] > self.min_cliff_value
+
+    def is_cliff_back_l_started(self):
+        if self.tof_back_l.get_distance() - self.prev_back_l_values[0] > self.min_cliff_value:
+            return self.get_back_l_dist() - self.prev_back_l_values[0] > self.min_cliff_value
 
     def is_cliff_back_r_started(self):
         if self.tof_back_r.get_distance() - self.prev_back_r_values[0] > self.min_cliff_value:
@@ -177,6 +189,10 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
     def is_cliff_right_f_started(self):
         if self.tof_right_f.get_distance() - self.prev_right_f_values[0] > self.min_cliff_value:
             return self.get_right_f_dist() - self.prev_right_f_values[0] > self.min_cliff_value
+
+    def is_cliff_right_b_started(self):
+        if self.tof_right_b.get_distance() - self.prev_right_b_values[0] > self.min_cliff_value:
+            return self.get_right_b_dist() - self.prev_right_b_values[0] > self.min_cliff_value
 
     # HERE
 
