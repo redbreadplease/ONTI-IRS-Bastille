@@ -20,7 +20,7 @@ class LogicAlgorithms(object):
     def is_wall(self, d1, d2):
         return self.get_mid_value(d1, d2) < self.right_align_distance - self.align_dist_deviation
 
-    def is_wall(self, d):
+    def is_wall_by_dist(self, d):
         return d < self.right_align_distance - self.align_dist_deviation
 
     @staticmethod

@@ -3,7 +3,7 @@ import time
 
 from MainController import RobotController
 
-right_dist_drive, dist_now = 600, 0
+right_dist_drive, dist_now = 1300, 0
 inverse_moving = False
 
 robot_controller = RobotController()
@@ -17,20 +17,25 @@ if robot_controller.get_bias_x_y()[0] < 0:
 print("inverse: " + str(inverse_moving))
 
 while True:
-    dist_now += robot_controller.get_bias_x_y()[1]
+    try:
+        try:
+            dist_now += robot_controller.get_bias_x_y()[1]
+        except Exception:
+            dist_now += robot_controller.get_bias_x_y()[1]
+        print("                                                               dist: " + str(dist_now))
+        print("Row optical flow values: " + str(robot_controller.get_optical_flow_row_values()))
 
-    print("                                                               dist: " + str(dist_now))
-    print("Row optical flow values: " + str(robot_controller.get_optical_flow_row_values()))
-
-    if dist_now > right_dist_drive:
-        if not inverse_moving:
-            robot_controller.move_straight(255)
-        else:
-            robot_controller.move_back(255)
-        print("Moving minus")
-    elif dist_now < -right_dist_drive:
-        if not inverse_moving:
-            robot_controller.move_back(255)
-        else:
-            robot_controller.move_straight(255)
-        print("Moving plus")
+        if dist_now > right_dist_drive:
+            if not inverse_moving:
+                robot_controller.move_straight(255)
+            else:
+                robot_controller.move_back(255)
+            print("Moving minus")
+        elif dist_now < -right_dist_drive:
+            if not inverse_moving:
+                robot_controller.move_back(255)
+            else:
+                robot_controller.move_straight(255)
+            print("Moving plus")
+    except ValueError:
+        continue

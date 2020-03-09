@@ -3,12 +3,12 @@ from OpticalFlow import OpticalFlowController
 from Sensors import SensorsController
 
 
-class RobotController(MovementAlgorithms, OpticalFlowController, AppliedMovement, SensorsController):
+class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, OpticalFlowController):
     def __init__(self):
-        super(OpticalFlowController, self).__init__()
         super(MovementAlgorithms, self).__init__()
         super(AppliedMovement, self).__init__()
         super(SensorsController, self).__init__()
+        super(OpticalFlowController, self).__init__()
 
     def do_any_align(self):
         if self.is_wall_front():

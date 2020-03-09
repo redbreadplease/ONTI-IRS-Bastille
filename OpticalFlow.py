@@ -22,6 +22,10 @@ class OpticalFlowChecker(object):
         x_now, y_now = "", ""
         while True:
             symbol = ser.read()
+
+            if symbol == "y":
+                continue
+
             if symbol != "x":
                 x_now += symbol
             else:
@@ -29,6 +33,9 @@ class OpticalFlowChecker(object):
                 break
         while True:
             symbol = ser.read()
+
+            if not symbol:
+                break
             if symbol != "y":
                 y_now += symbol
             else:
@@ -55,7 +62,9 @@ class OpticalFlowChecker(object):
 
 class OpticalFlowController(OpticalFlowChecker):
     def __init__(self):
+        print("o1")
         super(OpticalFlowChecker, self).__init__()
+        print("o2")
 
     def get_front_bias(self):
         return -self.get_bias_x_y()[1]

@@ -92,7 +92,7 @@ class MapBuilder:
         flag = True
         for i in range(len(self.map)):
             for j in range(len(self.map[i])):
-                if map[i][j] == '?':
+                if self.map[i][j] == '?':
                     flag = False
         return flag
 
