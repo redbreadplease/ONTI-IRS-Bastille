@@ -23,10 +23,10 @@ class RobotController(MovementAlgorithms, OpticalFlowController, AppliedMovement
     def while_state_move_straight(self):
         while not self.is_wall_front():
             self.move_straight(self.just_move_value)
-            if self.is_cliff_left_started():
+            if self.is_cliff_left_f_started():
                 self.leave_front_l_around_corner()
                 return True
-            elif self.is_cliff_right_started():
+            elif self.is_cliff_right_f_started():
                 self.leave_front_r_around_corner()
                 return True
         return False
@@ -34,10 +34,10 @@ class RobotController(MovementAlgorithms, OpticalFlowController, AppliedMovement
     def while_state_move_right(self):
         while not self.is_wall_right():
             self.move_right(self.just_move_value)
-            if self.is_cliff_front_started():
+            if self.is_cliff_front_r_started():
                 self.leave_right_f_around_corner()
                 return True
-            elif self.is_cliff_back_started():
+            elif self.is_cliff_back_r_started():
                 self.leave_right_b_around_corner()
                 return True
         return False
@@ -45,10 +45,10 @@ class RobotController(MovementAlgorithms, OpticalFlowController, AppliedMovement
     def while_state_move_back(self):
         while not self.is_wall_back():
             self.move_back(self.just_move_value)
-            if self.is_cliff_left_started():
+            if self.is_cliff_left_b_started():
                 self.leave_back_l_around_corner()
                 return True
-            elif self.is_cliff_right_started():
+            elif self.is_cliff_right_b_started():
                 self.leave_back_r_around_corner()
                 return True
         return False
@@ -56,10 +56,10 @@ class RobotController(MovementAlgorithms, OpticalFlowController, AppliedMovement
     def while_state_move_left(self):
         while not self.is_wall_left():
             self.move_left(self.just_move_value)
-            if self.is_cliff_front_started():
+            if self.is_cliff_front_l_started():
                 self.leave_left_f_around_corner()
                 return True
-            elif self.is_cliff_back_started():
+            elif self.is_cliff_back_l_started():
                 self.leave_left_b_around_corner()
                 return True
         return False
