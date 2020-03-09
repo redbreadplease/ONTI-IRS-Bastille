@@ -7,6 +7,8 @@ from Logic import LogicAlgorithms
 class SensorsChecker(object):
     CALIBRATION_FILENAME = "distSensorsCalibration.txt"
 
+    min_cliff_value = 50
+
     sensor_front_r_id, sensor_front_l_id = 12, 5
     sensor_left_f_id, sensor_left_b_id = 11, 9
     sensor_back_r_id, sensor_back_l_id = 18, 27
@@ -24,21 +26,8 @@ class SensorsChecker(object):
                             [sensor_back_r_id, tof_back_r], [sensor_back_l_id, tof_back_l]]
 
     def __init__(self):
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        for sensor_id, _ in self.sensors_ids_and_tofs:
-            GPIO.setup(sensor_id, GPIO.OUT)
-            GPIO.output(sensor_id, GPIO.LOW)
-        time.sleep(0.5)
-        for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
-            GPIO.output(sensor_id, GPIO.HIGH)
-            time.sleep(0.5)
-            sensor_tof.start_ranging(4)
+        super(object, self).__init__()
 
-        self.timing = self.tof_front_r.get_timing()
-        if self.timing < 20000:
-            self.timing = 20000
-        print("Timing %d ms" % (self.timing / 1000))
         self.f_r_additive_dist, self.l_f_additive_dist, self.b_l_additive_dist, self.r_b_additive_dist = 0, 0, 0, 0
         calibration_file = open(self.CALIBRATION_FILENAME)
         calibration_file_context = calibration_file.read().split("\n")
@@ -60,8 +49,24 @@ class SensorsChecker(object):
         except ValueError:
             print("No calibration sensors file found")
         self.prev_front_r_values, self.prev_front_l_values, self.prev_left_f_values, self.prev_left_b_values, \
-            self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
+        self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
             = list(), list(), list(), list(), list(), list(), list(), list()
+
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        for sensor_id, _ in self.sensors_ids_and_tofs:
+            GPIO.setup(sensor_id, GPIO.OUT)
+            GPIO.output(sensor_id, GPIO.LOW)
+        time.sleep(0.5)
+        for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
+            GPIO.output(sensor_id, GPIO.HIGH)
+            time.sleep(0.5)
+            sensor_tof.start_ranging(4)
+
+        self.timing = self.tof_front_r.get_timing()
+        if self.timing < 20000:
+            self.timing = 20000
+        print("Timing %d ms" % (self.timing / 1000))
 
     def get_front_r_dist(self):
         self.prev_front_r_values.append(self.tof_front_r.get_distance())
@@ -159,17 +164,23 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
     def is_wall_right_f(self):
         return self.is_wall(self.get_right_f_dist())
 
-    def is_cliff_front_started(self):
-        pass
+    def is_cliff_front_l_started(self):
+        if self.tof_front_l.get_distance() - self.prev_front_l_values[0] > self.min_cliff_value:
+            return self.get_front_l_dist() - self.prev_front_l_values[0] > self.min_cliff_value
 
-    def is_cliff_left_started(self):
-        pass
+    def is_cliff_left_b_started(self):
+        if self.tof_left_b.get_distance() - self.prev_left_b_values[0] > self.min_cliff_value:
+            return self.get_left_b_dist() - self.prev_left_b_values[0] > self.min_cliff_value
 
-    def is_cliff_back_started(self):
-        pass
+    def is_cliff_back_r_started(self):
+        if self.tof_back_r.get_distance() - self.prev_back_r_values[0] > self.min_cliff_value:
+            return self.get_back_r_dist() - self.prev_back_r_values[0] > self.min_cliff_value
 
-    def is_cliff_right_started(self):
-        pass
+    def is_cliff_right_f_started(self):
+        if self.tof_right_f.get_distance() - self.prev_right_f_values[0] > self.min_cliff_value:
+            return self.get_right_f_dist() - self.prev_right_f_values[0] > self.min_cliff_value
+
+    # HERE
 
     def get_walls_availability_array(self):
         return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
