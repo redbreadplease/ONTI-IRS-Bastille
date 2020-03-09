@@ -32,7 +32,7 @@ def choose_next_direction():
 
 def update_map_builder():
     global rd, mb, rc
-    mb.update(rd, mb.get_cells_driven_since_last_time_amount(), rc.get_walls_availability_array())
+    mb.update(rd, rc.get_cells_driven_since_last_time_amount(), rc.get_walls_availability_array())
 
 
 # the first map init

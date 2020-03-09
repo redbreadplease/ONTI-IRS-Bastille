@@ -61,10 +61,10 @@ class OpticalFlowChecker(object):
 
 
 class OpticalFlowController(OpticalFlowChecker):
+    optical_flow_cell_size = 1300.
+
     def __init__(self):
-        print("o1")
         super(OpticalFlowChecker, self).__init__()
-        print("o2")
 
     def get_front_bias(self):
         return -self.get_bias_x_y()[1]
@@ -79,4 +79,4 @@ class OpticalFlowController(OpticalFlowChecker):
         return -self.get_bias_x_y()[0]
 
     def get_cells_driven_since_last_time_amount(self):
-        pass
+        return int(float(self.get_bias_distance()) / (self.optical_flow_cell_size * 0.9))

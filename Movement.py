@@ -5,10 +5,8 @@ from Sensors import SensorsController
 
 class AppliedMovement(object):
     def __init__(self):
-        print("d1")
         self.ser = serial.Serial("/dev/ttyS0", 9600, timeout=5)
-        print("d2")
-
+    
     def move_clockwise(self, val):
         self.signal_to_move(0, 0, val, 0, val, val, 0, val)
 

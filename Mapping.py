@@ -81,7 +81,7 @@ class MapBuilder:
 
     def get_last_around_cells_states(self):
         return [self.map[self.row - 1][self.col] != '-', self.map[self.row][self.col - 1] != '|',
-                self.map[row + 1][col] != '-', self.map[row][col + 1] != '|']
+                self.map[self.row + 1][self.col] != '-', self.map[self.row][self.col + 1] != '|']
 
     def map_build(self):
         for i in range(len(self.map)):
