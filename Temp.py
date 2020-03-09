@@ -1,29 +1,10 @@
-import serial
+from MainController import RobotController
 
-ser = serial.Serial(
-    port='/dev/ttyS0',
-    baudrate=9600,
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,
-    timeout=0.1
-)
-while True:
-    x_now, y_now = "", ""
-    while True:
-        symbol = ser.read()
+rc = RobotController()
 
-        if symbol != "x":
-            x_now += symbol
-        else:
-            x_now = int(x_now)
-            break
-    while True:
-        symbol = ser.read()
+rc.do_any_align()
 
-        if symbol != "y":
-            y_now += symbol
-        else:
-            y_now = int(y_now)
-            break
-        print("x: " + str(x_now) + "  y: " + str(y_now))
+while not rc.is_cliff_right_f_started():
+    rc.move_straight(255)
+
+rc.stop_move()

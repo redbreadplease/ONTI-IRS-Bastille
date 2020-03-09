@@ -23,6 +23,8 @@ class OpticalFlowChecker(object):
         while True:
             symbol = ser.read()
 
+            print("EBANOE OPTICALFLOW Y")
+
             if symbol == "y":
                 continue
 
@@ -34,6 +36,8 @@ class OpticalFlowChecker(object):
         while True:
             symbol = ser.read()
 
+            print("EBANOE OPTICALFLOW X")
+
             if not symbol:
                 break
             if symbol != "y":
@@ -44,7 +48,6 @@ class OpticalFlowChecker(object):
         return x_now, y_now
 
     def get_bias_x_y(self):
-        print("HERE1")
         x_now, y_now = self.get_optical_flow_row_values()
         bias_x, bias_y = self.prev_optical_flow_x - x_now, self.prev_optical_flow_y - y_now
 

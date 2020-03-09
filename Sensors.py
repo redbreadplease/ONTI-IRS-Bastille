@@ -8,6 +8,7 @@ class SensorsChecker(object):
     CALIBRATION_FILENAME = "distSensorsCalibration.txt"
 
     min_cliff_value = 50
+    min_diff_cliff = 400
 
     sensor_front_r_id, sensor_front_l_id = 12, 5
     sensor_left_f_id, sensor_left_b_id = 11, 9
@@ -139,60 +140,68 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         return self.is_wall(self.get_right_f_dist(), self.get_right_b_dist())
 
     def is_wall_front_l(self):
-        return self.is_wall(self.get_front_l_dist())
+        return self.is_wall_by_dist(self.get_front_l_dist())
 
     def is_wall_front_r(self):
-        return self.is_wall(self.get_front_r_dist())
+        return self.is_wall_by_dist(self.get_front_r_dist())
 
     def is_wall_left_f(self):
-        return self.is_wall(self.get_left_f_dist())
+        return self.is_wall_by_dist(self.get_left_f_dist())
 
     def is_wall_left_b(self):
-        return self.is_wall(self.get_left_b_dist())
+        return self.is_wall_by_dist(self.get_left_b_dist())
 
     def is_wall_back_r(self):
-        return self.is_wall(self.get_back_r_dist())
+        return self.is_wall_by_dist(self.get_back_r_dist())
 
     def is_wall_back_l(self):
-        return self.is_wall(self.get_back_l_dist())
+        return self.is_wall_by_dist(self.get_back_l_dist())
 
     def is_wall_right_b(self):
-        return self.is_wall(self.get_right_b_dist())
+        return self.is_wall_by_dist(self.get_right_b_dist())
 
     def is_wall_right_f(self):
-        return self.is_wall(self.get_right_f_dist())
+        return self.is_wall_by_dist(self.get_right_f_dist())
 
     def is_cliff_front_l_started(self):
         if self.tof_front_l.get_distance() - self.prev_front_l_values[0] > self.min_cliff_value:
             return self.get_front_l_dist() - self.prev_front_l_values[0] > self.min_cliff_value
+        return abs(self.tof_front_l.get_distance() - self.tof_front_r.get_distance()) > self.min_diff_cliff
 
     def is_cliff_front_r_started(self):
         if self.tof_front_r.get_distance() - self.prev_front_r_values[0] > self.min_cliff_value:
             return self.get_front_r_dist() - self.prev_front_r_values[0] > self.min_cliff_value
+        return abs(self.tof_front_l.get_distance() - self.tof_front_r.get_distance()) > self.min_diff_cliff
 
     def is_cliff_left_b_started(self):
         if self.tof_left_b.get_distance() - self.prev_left_b_values[0] > self.min_cliff_value:
             return self.get_left_b_dist() - self.prev_left_b_values[0] > self.min_cliff_value
+        return abs(self.tof_left_b.get_distance() - self.tof_left_f.get_distance()) > self.min_diff_cliff
 
     def is_cliff_left_f_started(self):
         if self.tof_left_f.get_distance() - self.prev_left_f_values[0] > self.min_cliff_value:
             return self.get_left_f_dist() - self.prev_left_f_values[0] > self.min_cliff_value
+        return abs(self.tof_left_b.get_distance() - self.tof_left_f.get_distance()) > self.min_diff_cliff
 
     def is_cliff_back_l_started(self):
         if self.tof_back_l.get_distance() - self.prev_back_l_values[0] > self.min_cliff_value:
             return self.get_back_l_dist() - self.prev_back_l_values[0] > self.min_cliff_value
+        return abs(self.tof_back_r.get_distance() - self.tof_back_l.get_distance()) > self.min_diff_cliff
 
     def is_cliff_back_r_started(self):
         if self.tof_back_r.get_distance() - self.prev_back_r_values[0] > self.min_cliff_value:
             return self.get_back_r_dist() - self.prev_back_r_values[0] > self.min_cliff_value
+        return abs(self.tof_back_r.get_distance() - self.tof_back_l.get_distance()) > self.min_diff_cliff
 
     def is_cliff_right_f_started(self):
         if self.tof_right_f.get_distance() - self.prev_right_f_values[0] > self.min_cliff_value:
             return self.get_right_f_dist() - self.prev_right_f_values[0] > self.min_cliff_value
+        return abs(self.tof_right_f.get_distance() - self.tof_right_b.get_distance()) > self.min_diff_cliff
 
     def is_cliff_right_b_started(self):
         if self.tof_right_b.get_distance() - self.prev_right_b_values[0] > self.min_cliff_value:
             return self.get_right_b_dist() - self.prev_right_b_values[0] > self.min_cliff_value
+        return abs(self.tof_right_f.get_distance() - self.tof_right_b.get_distance()) > self.min_diff_cliff
 
     # HERE
 

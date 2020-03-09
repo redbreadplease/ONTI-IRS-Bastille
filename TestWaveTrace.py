@@ -12,6 +12,10 @@ rd = 0
 def choose_next_direction():
     global rd, rc, mb
     around_cells_discovering_state = mb.get_last_around_cells_states()
+
+    print("semen cells: " + str(around_cells_discovering_state))
+    print("robot cells: " + str([rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()]))
+
     if (not rc.is_wall_front() and around_cells_discovering_state[0]) and \
             (not rc.is_wall_left() and around_cells_discovering_state[1]) and \
             (not rc.is_wall_back() and around_cells_discovering_state[2]) and \
@@ -32,7 +36,9 @@ def choose_next_direction():
 
 def update_map_builder():
     global rd, mb, rc
-    mb.update(rd, rc.get_cells_driven_since_last_time_amount(), rc.get_walls_availability_array())
+    cells_amount = rc.get_cells_driven_since_last_time_amount()
+    print(cells_amount)
+    mb.update(rd, cells_amount, rc.get_walls_availability_array())
 
 
 # the first map init
