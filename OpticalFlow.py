@@ -7,7 +7,8 @@ import serial
 class OpticalFlowChecker(object):
 
     def __init__(self):
-        self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
+        # self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
+        self.prev_optical_flow_x, self.prev_optical_flow_y = None, None
 
     @staticmethod
     def get_optical_flow_row_values():
@@ -82,4 +83,9 @@ class OpticalFlowController(OpticalFlowChecker):
         return -self.get_bias_x_y()[0]
 
     def get_cells_driven_since_last_time_amount(self):
-        return int(float(self.get_bias_distance()) / (self.optical_flow_cell_size * 0.9))
+        print("Cells\'ve driven: ")
+        try:
+            return int(input())
+        except ValueError:
+            return int(input())
+        # return int(float(self.get_bias_distance()) / (self.optical_flow_cell_size * 0.9))
