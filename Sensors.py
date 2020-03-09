@@ -74,7 +74,7 @@ class SensorsChecker(object):
         return self.prev_front_r_values[-1] + self.f_r_additive_dist
 
     def get_front_l_dist(self):
-        self.prev_front_l_values.append(self.tof_front_r.get_distance())
+        self.prev_front_l_values.append(self.tof_front_l.get_distance())
         if len(self.prev_front_l_values) > self.sensors_values_queue_size:
             self.prev_front_l_values.remove(self.prev_front_l_values[0])
         return self.prev_front_l_values[-1]
@@ -92,7 +92,7 @@ class SensorsChecker(object):
         return self.prev_left_b_values[-1]
 
     def get_back_l_dist(self):
-        self.prev_back_l_values.append(self.tof_front_r.get_distance())
+        self.prev_back_l_values.append(self.tof_back_l.get_distance())
         if len(self.prev_back_l_values) > self.sensors_values_queue_size:
             self.prev_back_l_values.remove(self.prev_back_l_values[0])
         return self.prev_back_l_values[-1] + self.b_l_additive_dist

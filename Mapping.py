@@ -59,7 +59,7 @@ class MapBuilder:
             self.map[self.row - 1][self.col] = '-'
 
         elif not walls_availability[0] and just_turn_type != 2:
-            self.map[self.row - 1][self.col] = '?'
+            self.map[self.row - 2][self.col] = '?'
 
         if walls_availability[1]:
             self.map[self.row][self.col - 1] = '|'
@@ -71,17 +71,20 @@ class MapBuilder:
             self.map[self.row + 1][self.col] = '-'
 
         elif not walls_availability[2] and just_turn_type != 0:
-            self.map[self.row + 1][self.col] = '?'
+            self.map[self.row + 2][self.col] = '?'
 
         if walls_availability[3]:
             self.map[self.row][self.col + 1] = '|'
 
         elif not walls_availability[3] and just_turn_type != 1:
-            self.map[self.row][self.col + 1] = '?'
+            self.map[self.row][self.col + 2] = '?'
 
     def get_last_around_cells_states(self):
-        return [self.map[self.row - 1][self.col] == '-', self.map[self.row][self.col - 1] == '|',
-                self.map[self.row + 1][self.col] == '-', self.map[self.row][self.col + 1] == '|']
+        self.map_build()
+        return [self.map[self.row - 2][self.col] == '?' and not self.map[self.row - 1][self.col] == '|',
+                self.map[self.row][self.col - 2] == '?' and not self.map[self.row][self.col - 1] == '-',
+                self.map[self.row + 2][self.col] == '?' and not self.map[self.row + 1][self.col] == '|',
+                self.map[self.row][self.col + 2] == '?' and not self.map[self.row][self.col + 1] == '-']
 
     def map_build(self):
         for i in range(len(self.map)):

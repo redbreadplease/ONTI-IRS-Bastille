@@ -4,7 +4,7 @@ class LogicAlgorithms(object):
     right_align_distance = 110
     align_dist_deviation = 20
     min_cliff_difference = 30
-    wall_detection_distance = 300
+    wall_detection_distance = 200
 
     def get_align_err(self, d1, d2):
         return round((max(min(abs(d1 - d2) * self.p_coefficient, 255), 50)), 1)

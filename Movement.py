@@ -116,7 +116,7 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
         self.stop_move()
 
     def leave_front_r_around_corner(self):
-        while self.is_wall_front_r() or self.is_wall_right_b():
+        while self.is_wall_right_b():
             self.move_straight(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
