@@ -27,8 +27,10 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
                 self.leave_front_l_around_corner()
                 return True
             elif self.is_cliff_right_f_started():
+                self.stop_move()
                 self.leave_front_r_around_corner()
                 return True
+        self.stop_move()
         return False
 
     def while_state_move_right(self):

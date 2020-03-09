@@ -4,6 +4,7 @@ class LogicAlgorithms(object):
     right_align_distance = 110
     align_dist_deviation = 20
     min_cliff_difference = 30
+    wall_detection_distance = 300
 
     def get_align_err(self, d1, d2):
         return round((max(min(abs(d1 - d2) * self.p_coefficient, 255), 50)), 1)
@@ -18,10 +19,10 @@ class LogicAlgorithms(object):
         return mid_value > self.right_align_distance - self.align_dist_deviation
 
     def is_wall(self, d1, d2):
-        return self.get_mid_value(d1, d2) < self.right_align_distance - self.align_dist_deviation
+        return self.get_mid_value(d1, d2) < self.wall_detection_distance
 
     def is_wall_by_dist(self, d):
-        return d < self.right_align_distance - self.align_dist_deviation
+        return d < self.wall_detection_distance
 
     @staticmethod
     def get_mid_value(a, b):
