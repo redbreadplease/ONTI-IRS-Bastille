@@ -123,7 +123,7 @@ class SensorsChecker(object):
 
 class SensorsController(SensorsChecker, LogicAlgorithms):
     def __init__(self):
-        super(SensorsController, self).__init__()
+        super(SensorsChecker, self).__init__()
         super(LogicAlgorithms, self).__init__()
 
     def is_wall_front(self):
