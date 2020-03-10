@@ -3,6 +3,7 @@ from Mapping import MapBuilder
 
 rc = RobotController()
 rc.do_any_align()
+print("Finished any_align function")
 
 mb = MapBuilder()
 
@@ -45,20 +46,21 @@ def update_map_builder():
 mb.update(5, 0, [rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()])
 
 while not mb.is_map_built():
+    print("Dir: " + str(rd))
     if rd == 0:
         rc.while_state_move_straight()
         update_map_builder()
         choose_next_direction()
-    if rd == 1:
+    elif rd == 1:
         rc.while_state_move_left()
         update_map_builder()
         choose_next_direction()
-    if rd == 2:
+    elif rd == 2:
         rc.while_state_move_back()
         update_map_builder()
         choose_next_direction()
-    if rd == 3:
-        rc.while_state_move_right()
+    elif rd == 3:
+        print(rc.while_state_move_right())
         update_map_builder()
         choose_next_direction()
 

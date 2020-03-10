@@ -204,7 +204,10 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
             return self.get_right_b_dist() - self.prev_right_b_values[0] > self.min_cliff_value
         return abs(self.tof_right_f.get_distance() - self.tof_right_b.get_distance()) > self.min_diff_cliff
 
-    # HERE
-
     def get_walls_availability_array(self):
         return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
+
+    def clean_sensors_values_queues(self):
+        self.prev_front_r_values, self.prev_front_l_values, self.prev_left_f_values, self.prev_left_b_values, \
+        self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
+            = list(), list(), list(), list(), list(), list(), list(), list()

@@ -25,12 +25,13 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
             self.move_straight(self.just_move_value)
             if self.is_cliff_left_f_started():
                 self.leave_front_l_around_corner()
-                return True
+                yield True
             elif self.is_cliff_right_f_started():
                 self.leave_front_r_around_corner()
-                return True
+                yield True
         self.stop_move()
-        return False
+        self.clean_sensors_values_queues()
+        yield False
 
     def while_state_move_right(self):
         while not self.is_wall_right():
@@ -41,26 +42,31 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
             elif self.is_cliff_back_r_started():
                 self.leave_right_b_around_corner()
                 return True
-        return False
+        self.stop_move()
+        yield False
 
     def while_state_move_back(self):
         while not self.is_wall_back():
             self.move_back(self.just_move_value)
             if self.is_cliff_left_b_started():
                 self.leave_back_l_around_corner()
-                return True
+                yield True
             elif self.is_cliff_right_b_started():
                 self.leave_back_r_around_corner()
-                return True
-        return False
+                yield True
+        self.stop_move()
+        self.clean_sensors_values_queues()
+        yield False
 
     def while_state_move_left(self):
         while not self.is_wall_left():
             self.move_left(self.just_move_value)
             if self.is_cliff_front_l_started():
                 self.leave_left_f_around_corner()
-                return True
+                yield True
             elif self.is_cliff_back_l_started():
                 self.leave_left_b_around_corner()
-                return True
-        return False
+                yield True
+        self.stop_move()
+        self.clean_sensors_values_queues()
+        yield False

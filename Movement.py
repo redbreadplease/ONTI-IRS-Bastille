@@ -43,70 +43,83 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
 
     def do_front_align(self):
         while True:
+            print("Doing front align")
             d1, d2 = self.get_front_l_dist(), self.get_front_r_dist()
-            err = self.get_align_err(d1=d1, d2=d2)
+            err = self.get_align_circle_err(d1=d1, d2=d2)
+            print("                        " + str(d1) + " " + str(d2) + " " + str(err))
             if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_clockwise(err)
             elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_counterclockwise(err)
             else:
                 mid = self.get_mid_value(d1, d2)
+                err = self.get_align_progressive_err(mid)
                 if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_straight(mid - self.right_align_distance)
+                    self.move_straight(err)
                 elif self.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_back(mid - self.right_align_distance)
+                    self.move_back(err)
                 else:
+                    self.stop_move()
                     return
 
     def do_left_align(self):
         while True:
+            print("Doing left align")
             d1, d2 = self.get_left_f_dist(), self.get_left_b_dist()
-            err = self.get_align_err(d1=d1, d2=d2)
+            err = self.get_align_circle_err(d1=d1, d2=d2)
             if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
             elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
                 mid = self.get_mid_value(d1, d2)
+                err = self.get_align_progressive_err(mid)
                 if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_left(mid - self.right_align_distance)
+                    self.move_left(err)
                 elif self.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_right(mid - self.right_align_distance)
+                    self.move_right(err)
                 else:
+                    self.stop_move()
                     return
 
     def do_back_align(self):
         while True:
+            print("Doing back align")
             d1, d2 = self.get_back_l_dist(), self.get_back_r_dist()
-            err = self.get_align_err(d1=d1, d2=d2)
+            err = self.get_align_circle_err(d1=d1, d2=d2)
             if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
             elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
                 mid = self.get_mid_value(d1, d2)
+                err = self.get_align_progressive_err(mid)
                 if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_back(mid - self.right_align_distance)
+                    self.move_back(err)
                 elif self.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_straight(mid - self.right_align_distance)
+                    self.move_straight(err)
                 else:
+                    self.stop_move()
                     return
 
     def do_right_align(self):
         while True:
+            print("Doing right align")
             d1, d2 = self.get_right_b_dist(), self.get_right_f_dist()
-            err = self.get_align_err(d1=d1, d2=d2)
+            err = self.get_align_circle_err(d1=d1, d2=d2)
             if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(err)
             elif self.does_side_sensors_difference_means_round_align(d2, d1):
                 self.move_clockwise(err)
             else:
                 mid = self.get_mid_value(d1, d2)
+                err = self.get_align_progressive_err(mid)
                 if self.does_side_sensors_difference_means_go_in_wall_direction(mid):
-                    self.move_right(mid - self.right_align_distance)
+                    self.move_right(err)
                 elif self.does_side_sensors_difference_means_go_from_wall(mid):
-                    self.move_left(mid - self.right_align_distance)
+                    self.move_left(err)
                 else:
+                    self.stop_move()
                     return
 
     def leave_front_l_around_corner(self):

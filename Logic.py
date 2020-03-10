@@ -6,8 +6,11 @@ class LogicAlgorithms(object):
     min_cliff_difference = 30
     wall_detection_distance = 200
 
-    def get_align_err(self, d1, d2):
-        return round((max(min(abs(d1 - d2) * self.p_coefficient, 255), 50)), 1)
+    def get_align_circle_err(self, d1, d2):
+        return round((max(min(abs(d1 - d2) * self.p_coefficient, 511), 220)), 1)
+
+    def get_align_progressive_err(self, d):
+        return round((max(min(abs(d) * self.p_coefficient, 511), 220)), 1)
 
     def does_side_sensors_difference_means_round_align(self, d1, d2):
         return d1 - d2 > self.min_round_react_align_value
@@ -16,7 +19,7 @@ class LogicAlgorithms(object):
         return mid_value > self.right_align_distance + self.align_dist_deviation
 
     def does_side_sensors_difference_means_go_from_wall(self, mid_value):
-        return mid_value > self.right_align_distance - self.align_dist_deviation
+        return mid_value < self.right_align_distance - self.align_dist_deviation
 
     def is_wall(self, d1, d2):
         return self.get_mid_value(d1, d2) < self.wall_detection_distance

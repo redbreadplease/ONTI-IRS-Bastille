@@ -88,7 +88,7 @@ class MapBuilder:
 
     def map_build(self):
         for i in range(len(self.map)):
-            print(self.map[i])
+            print(str(self.map[i]).replace(',', ' ').replace('[', '').replace(']', ''))
             print()
 
     def is_map_built(self):
