@@ -35,7 +35,7 @@ class AppliedMovement(object):
 
 class MovementAlgorithms(AppliedMovement, SensorsController):
     just_move_value = 511
-    outside_corner_movement_time = 0.2
+    outside_corner_movement_time = 0.05
 
     def __init__(self):
         super(AppliedMovement, self).__init__()
@@ -123,15 +123,15 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
                     return
 
     def leave_front_l_around_corner(self):
-        f_r_been, f_l_been = self.is_wall_front_r(), self.is_wall_front_r()
-        while (f_r_been and not self.is_wall_front_l()) or (f_l_been and not self.is_wall_front_r()):
+        while self.is_wall_left_b():
             self.move_left(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
 
     def leave_front_r_around_corner(self):
-        f_r_been, f_l_been = self.is_wall_front_r(), self.is_wall_front_r()
-        while (f_r_been and not self.is_wall_front_l()) or (f_l_been and not self.is_wall_front_r()):
+        print("leave_front_r_around_corner")
+        r_f_been, r_b_been = self.is_wall_right_f(), self.is_wall_right_b()
+        while r_f_been == self.is_wall_right_f() and r_b_been == self.is_wall_right_b():
             self.move_straight(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
@@ -143,7 +143,11 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
         self.stop_move()
 
     def leave_right_b_around_corner(self):
-        while self.is_wall_right_f() or self.is_wall_right_b():
+        print("leave_right_b_around_corner")
+        b_l_been, b_r_been = self.is_wall_back_l(), self.is_wall_back_r()
+        print("been:", b_l_been, b_r_been)
+        while b_l_been == self.is_wall_back_l() and b_r_been == self.is_wall_back_r():
+            print(b_l_been == self.is_wall_back_l(), "and", self.is_wall_back_r())
             self.move_back(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
