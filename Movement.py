@@ -123,17 +123,18 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
                     return
 
     def leave_front_l_around_corner(self):
-        while self.is_wall_front_r() or self.is_wall_front_l():
+        f_r_been, f_l_been = self.is_wall_front_r(), self.is_wall_front_r()
+        while (f_r_been and not self.is_wall_front_l()) or (f_l_been and not self.is_wall_front_r()):
             self.move_left(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
 
     def leave_front_r_around_corner(self):
-        while self.is_wall_right_b():
+        f_r_been, f_l_been = self.is_wall_front_r(), self.is_wall_front_r()
+        while (f_r_been and not self.is_wall_front_l()) or (f_l_been and not self.is_wall_front_r()):
             self.move_straight(self.just_move_value)
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
-        print("here")
 
     def leave_right_f_around_corner(self):
         while self.is_wall_right_f() or self.is_wall_right_b():

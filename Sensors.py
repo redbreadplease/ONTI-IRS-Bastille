@@ -207,6 +207,18 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
     def get_walls_availability_array(self):
         return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
 
+    def clean_front_sensors_queue(self):
+        self.prev_front_r_values, self.prev_front_l_values = list(), list()
+
+    def clean_left_sensors_queue(self):
+        self.prev_left_b_values, self.prev_left_f_values = list(), list()
+
+    def clean_back_sensors_queue(self):
+        self.prev_back_l_values, self.prev_back_r_values = list(), list()
+
+    def clean_right_sensors_queue(self):
+        self.prev_right_b_values, self.prev_right_f_values = list(), list()
+
     def clean_sensors_values_queues(self):
         self.prev_front_r_values, self.prev_front_l_values, self.prev_left_f_values, self.prev_left_b_values, \
         self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
