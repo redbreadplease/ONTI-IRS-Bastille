@@ -6,6 +6,8 @@ class LogicAlgorithms(object):
     min_cliff_difference = 150
     wall_detection_distance = 200
 
+    cliff_diff = 150
+
     min_react_wheels_value = 255
     max_react_wheels_value = 511
 
@@ -43,4 +45,4 @@ class LogicAlgorithms(object):
             (first_prev_dist - first_act_dist) - (second_prev_dist - second_act_dist)) > self.min_cliff_difference
 
     def does_diff_mean_cliff(self, d1, d2):
-        return abs(d1 - d2) > 150
+        return abs(d1 - d2) > self.cliff_diff
