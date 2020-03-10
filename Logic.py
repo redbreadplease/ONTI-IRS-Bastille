@@ -1,19 +1,24 @@
 class LogicAlgorithms(object):
-    p_coefficient = 3.
+    p_coefficient = 1.5
+
     min_round_react_align_value = 10
+
     right_align_distance = 110
+
     align_dist_deviation = 20
+
     min_cliff_difference = 150
-    wall_detection_distance = 200
+
+    wall_detection_distance = 150
 
     cliff_diff = 150
 
     min_react_wheels_value = 255
-    max_react_wheels_value = 511
+    max_react_wheels_value = 800
 
     def get_align_progressive_err(self, d):
-        return round((max(min(abs(d) * self.p_coefficient, self.max_react_wheels_value), self.min_react_wheels_value)),
-                     1)
+        return \
+            round((max(min(abs(d) * self.p_coefficient, self.max_react_wheels_value), self.min_react_wheels_value)), 1)
 
     def get_align_circle_err(self, d1, d2):
         return self.get_align_progressive_err(d1 - d2)

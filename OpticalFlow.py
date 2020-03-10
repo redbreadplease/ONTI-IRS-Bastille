@@ -23,12 +23,9 @@ class OpticalFlowChecker(object):
         x_now, y_now = "", ""
         while True:
             symbol = ser.read()
-
             print("EBANOE OPTICALFLOW Y")
-
             if symbol == "y":
                 continue
-
             if symbol != "x":
                 x_now += symbol
             else:
@@ -36,9 +33,7 @@ class OpticalFlowChecker(object):
                 break
         while True:
             symbol = ser.read()
-
             print("EBANOE OPTICALFLOW X")
-
             if not symbol:
                 break
             if symbol != "y":
@@ -55,10 +50,6 @@ class OpticalFlowChecker(object):
         self.prev_optical_flow_x, self.prev_optical_flow_y = x_now, y_now
 
         return bias_x, bias_y
-
-    def get_bias_distance(self):
-        bias_x, bias_y = self.get_bias_x_y()
-        return sqrt(bias_x ** 2 + bias_y ** 2)
 
     def reset(self):
         self.prev_optical_flow_x, self.prev_optical_flow_y = self.get_optical_flow_row_values()
@@ -81,6 +72,10 @@ class OpticalFlowController(OpticalFlowChecker):
 
     def get_right_bias(self):
         return -self.get_bias_x_y()[0]
+
+    def get_bias_distance(self):
+        bias_x, bias_y = self.get_bias_x_y()
+        return sqrt(bias_x ** 2 + bias_y ** 2)
 
     def get_cells_driven_since_last_time_amount(self):
         print("Cells\'ve driven: ")

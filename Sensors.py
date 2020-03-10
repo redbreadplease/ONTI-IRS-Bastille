@@ -18,7 +18,7 @@ class SensorsChecker(object):
     tof_back_r, tof_back_l = VL53L0X.VL53L0X(address=0x2E), VL53L0X.VL53L0X(address=0x2F)
     tof_right_f, tof_right_b = VL53L0X.VL53L0X(address=0x4A), VL53L0X.VL53L0X(address=0x4F)
 
-    sensors_values_queue_size = 10
+    sensors_values_queue_size = 5
 
     sensors_ids_and_tofs = [[sensor_right_f_id, tof_right_f], [sensor_right_b_id, tof_right_b],
                             [sensor_left_f_id, tof_left_f], [sensor_left_b_id, tof_left_b],
@@ -66,53 +66,35 @@ class SensorsChecker(object):
             self.timing = 20000
         print("Timing %d ms" % (self.timing / 1000))
 
+    def get_dist(self, queue, tof, additive):
+        queue.append(tof.get_distance())
+        if len(queue) > self.sensors_values_queue_size:
+            queue.remove(queue[0])
+        return queue[-1] + additive
+
     def get_front_r_dist(self):
-        self.prev_front_r_values.append(self.tof_front_r.get_distance())
-        if len(self.prev_front_r_values) > self.sensors_values_queue_size:
-            self.prev_front_r_values.remove(self.prev_front_r_values[0])
-        return self.prev_front_r_values[-1] + self.f_r_additive_dist
+        return self.get_dist(self.prev_front_r_values, self.tof_front_r, self.f_r_additive_dist)
 
     def get_front_l_dist(self):
-        self.prev_front_l_values.append(self.tof_front_l.get_distance())
-        if len(self.prev_front_l_values) > self.sensors_values_queue_size:
-            self.prev_front_l_values.remove(self.prev_front_l_values[0])
-        return self.prev_front_l_values[-1]
+        return self.get_dist(self.prev_front_l_values, self.tof_front_l, 0)
 
     def get_left_f_dist(self):
-        self.prev_left_f_values.append(self.tof_left_f.get_distance())
-        if len(self.prev_left_f_values) > self.sensors_values_queue_size:
-            self.prev_left_f_values.remove(self.prev_left_f_values[0])
-        return self.prev_left_f_values[-1] + self.l_f_additive_dist
+        return self.get_dist(self.prev_left_f_values, self.tof_left_f, self.l_f_additive_dist)
 
     def get_left_b_dist(self):
-        self.prev_left_b_values.append(self.tof_left_b.get_distance())
-        if len(self.prev_left_b_values) > self.sensors_values_queue_size:
-            self.prev_left_b_values.remove(self.prev_left_b_values[0])
-        return self.prev_left_b_values[-1]
+        return self.get_dist(self.prev_left_b_values, self.tof_left_b, 0)
 
     def get_back_l_dist(self):
-        self.prev_back_l_values.append(self.tof_back_l.get_distance())
-        if len(self.prev_back_l_values) > self.sensors_values_queue_size:
-            self.prev_back_l_values.remove(self.prev_back_l_values[0])
-        return self.prev_back_l_values[-1] + self.b_l_additive_dist
+        return self.get_dist(self.prev_back_l_values, self.tof_back_l, self.b_l_additive_dist)
 
     def get_back_r_dist(self):
-        self.prev_back_r_values.append(self.tof_back_r.get_distance())
-        if len(self.prev_back_r_values) > self.sensors_values_queue_size:
-            self.prev_back_r_values.remove(self.prev_back_r_values[0])
-        return self.prev_back_r_values[-1]
+        return self.get_dist(self.prev_back_r_values, self.tof_back_r, 0)
 
     def get_right_b_dist(self):
-        self.prev_right_b_values.append(self.tof_right_b.get_distance())
-        if len(self.prev_right_b_values) > self.sensors_values_queue_size:
-            self.prev_right_b_values.remove(self.prev_right_b_values[0])
-        return self.prev_right_b_values[-1] + self.r_b_additive_dist
+        return self.get_dist(self.prev_right_b_values, self.tof_right_b, self.r_b_additive_dist)
 
     def get_right_f_dist(self):
-        self.prev_right_f_values.append(self.tof_right_f.get_distance())
-        if len(self.prev_right_f_values) > self.sensors_values_queue_size:
-            self.prev_right_f_values.remove(self.prev_right_f_values[0])
-        return self.prev_right_f_values[-1]
+        return self.get_dist(self.prev_right_f_values, self.tof_right_f, 0)
 
     def shut_down(self):
         for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
@@ -162,45 +144,34 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
     def is_wall_right_f(self):
         return self.is_wall_by_dist(self.get_right_f_dist())
 
+    def is_cliff_started(self, first_tof, first_queue, second_tof):
+        if first_tof.get_distance() - first_queue[0] > self.min_cliff_value:
+            return first_tof.get_distance() - first_queue[0] > self.min_cliff_value
+        return self.does_diff_mean_cliff(first_tof.get_distance(), second_tof.get_distance())
+
     def is_cliff_front_l_started(self):
-        if self.tof_front_l.get_distance() - self.prev_front_l_values[0] > self.min_cliff_value:
-            return self.get_front_l_dist() - self.prev_front_l_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_front_l.get_distance(), self.tof_front_r.get_distance())
+        return self.is_cliff_started(self.tof_front_l, self.prev_front_l_values, self.tof_front_r)
 
     def is_cliff_front_r_started(self):
-        if self.tof_front_r.get_distance() - self.prev_front_r_values[0] > self.min_cliff_value:
-            return self.get_front_r_dist() - self.prev_front_r_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_front_l.get_distance(), self.tof_front_r.get_distance())
+        return self.is_cliff_started(self.tof_front_r, self.prev_front_r_values, self.tof_front_l)
 
     def is_cliff_left_b_started(self):
-        if self.tof_left_b.get_distance() - self.prev_left_b_values[0] > self.min_cliff_value:
-            return self.get_left_b_dist() - self.prev_left_b_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_left_b.get_distance(), self.tof_left_f.get_distance())
+        return self.is_cliff_started(self.tof_left_b, self.prev_left_b_values, self.tof_left_f)
 
     def is_cliff_left_f_started(self):
-        if self.tof_left_f.get_distance() - self.prev_left_f_values[0] > self.min_cliff_value:
-            return self.get_left_f_dist() - self.prev_left_f_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_left_b.get_distance(), self.tof_left_f.get_distance())
+        return self.is_cliff_started(self.tof_left_f, self.prev_left_f_values, self.tof_left_b)
 
     def is_cliff_back_l_started(self):
-        if self.tof_back_l.get_distance() - self.prev_back_l_values[0] > self.min_cliff_value:
-            return self.get_back_l_dist() - self.prev_back_l_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_back_r.get_distance(), self.tof_back_l.get_distance())
+        return self.is_cliff_started(self.tof_back_l, self.prev_back_l_values, self.tof_back_r)
 
     def is_cliff_back_r_started(self):
-        if self.tof_back_r.get_distance() - self.prev_back_r_values[0] > self.min_cliff_value:
-            return self.get_back_r_dist() - self.prev_back_r_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_back_r.get_distance(), self.tof_back_l.get_distance())
+        return self.is_cliff_started(self.tof_back_r, self.prev_back_r_values, self.tof_back_l)
 
     def is_cliff_right_f_started(self):
-        if self.tof_right_f.get_distance() - self.prev_right_f_values[0] > self.min_cliff_value:
-            return self.get_right_f_dist() - self.prev_right_f_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_right_f.get_distance(), self.tof_right_b.get_distance())
+        return self.is_cliff_started(self.tof_right_f, self.prev_right_f_values, self.tof_right_b)
 
     def is_cliff_right_b_started(self):
-        if self.tof_right_b.get_distance() - self.prev_right_b_values[0] > self.min_cliff_value:
-            return self.get_right_b_dist() - self.prev_right_b_values[0] > self.min_cliff_value
-        return self.does_diff_mean_cliff(self.tof_right_f.get_distance(), self.tof_right_b.get_distance())
+        return self.is_cliff_started(self.tof_right_b, self.prev_right_b_values, self.tof_right_f)
 
     def get_walls_availability_array(self):
         return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
@@ -218,6 +189,7 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         self.prev_right_b_values, self.prev_right_f_values = list(), list()
 
     def clean_sensors_values_queues(self):
-        self.prev_front_r_values, self.prev_front_l_values, self.prev_left_f_values, self.prev_left_b_values, \
-        self.prev_back_l_values, self.prev_back_r_values, self.prev_right_b_values, self.prev_right_f_values \
-            = list(), list(), list(), list(), list(), list(), list(), list()
+        self.clean_front_sensors_queue()
+        self.clean_left_sensors_queue()
+        self.clean_back_sensors_queue()
+        self.clean_right_sensors_queue()
