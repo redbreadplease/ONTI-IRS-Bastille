@@ -2,7 +2,8 @@ from MainController import RobotController
 from Mapping import MapBuilder
 
 rc = RobotController()
-
+rc.while_state_move_right()
+exit()
 mb = MapBuilder()
 rd = 0
 

@@ -47,6 +47,7 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
         clean_sensors_first()
         clean_sensors_second()
         while not is_wall_following_direction():
+            self.update_sensors_queues()
             move_following_direction(self.just_move_value)
             if first_cliff_detected():
                 self.handle_cliff(

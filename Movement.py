@@ -63,7 +63,7 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
                     return
 
     def do_front_align(self):
-        self.do_align(self.get_front_l_dist, self.get_front_r_dist, self.move_straight, self.move_back)
+        self.do_align(self.get_front_r_dist, self.get_front_l_dist, self.move_straight, self.move_back)
 
     def do_left_align(self):
         self.do_align(self.get_left_f_dist, self.get_left_b_dist, self.move_left, self.move_right)
