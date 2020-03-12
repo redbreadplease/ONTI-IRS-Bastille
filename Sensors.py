@@ -9,7 +9,7 @@ class SensorsChecker(object):
 
     min_cliff_value = 50
 
-    sensor_front_r_id, sensor_front_l_id = 12, 5
+    sensor_front_r_id, sensor_front_l_id = 5, 12
     sensor_left_f_id, sensor_left_b_id = 11, 9
     sensor_back_r_id, sensor_back_l_id = 18, 27
     sensor_right_f_id, sensor_right_b_id = 13, 17
@@ -55,10 +55,10 @@ class SensorsChecker(object):
         for sensor_id, _ in self.sensors_ids_and_tofs:
             GPIO.setup(sensor_id, GPIO.OUT)
             GPIO.output(sensor_id, GPIO.LOW)
-        time.sleep(0.3)
+        time.sleep(0.4)
         for sensor_id, sensor_tof in self.sensors_ids_and_tofs:
             GPIO.output(sensor_id, GPIO.HIGH)
-            time.sleep(0.3)
+            time.sleep(0.4)
             sensor_tof.start_ranging(4)
 
         self.timing = self.tof_front_r.get_timing()
@@ -148,6 +148,34 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         if first_tof.get_distance() - first_queue[0] > self.min_cliff_value:
             return first_tof.get_distance() - first_queue[0] > self.min_cliff_value
         return self.does_diff_mean_cliff(first_tof.get_distance(), second_tof.get_distance())
+
+    @staticmethod
+    def is_first_dist_bigger_than_second(first_dists_queue, second_dists_queue):
+        return first_dists_queue[-1] > second_dists_queue[-1]
+
+    def is_dist_front_l_bigger_then_r(self):
+        return self.is_first_dist_bigger_than_second(self.prev_front_l_values, self.prev_front_r_values)
+
+    def is_dist_front_r_bigger_then_l(self):
+        return not self.is_dist_front_l_bigger_then_r()
+
+    def is_dist_left_b_bigger_then_f(self):
+        return self.is_first_dist_bigger_than_second(self.prev_left_b_values, self.prev_left_f_values)
+
+    def is_dist_left_f_bigger_then_b(self):
+        return not self.is_dist_left_b_bigger_then_f()
+
+    def is_dist_back_l_bigger_then_r(self):
+        return self.is_first_dist_bigger_than_second(self.prev_back_l_values, self.prev_back_r_values)
+
+    def is_dist_back_r_bigger_then_l(self):
+        return not self.is_dist_back_l_bigger_then_r()
+
+    def is_dist_right_b_bigger_then_f(self):
+        return self.is_first_dist_bigger_than_second(self.prev_right_b_values, self.prev_right_f_values)
+
+    def is_idst_right_f_bigger_then_b(self):
+        return not self.is_dist_right_b_bigger_then_f()
 
     def is_cliff_front_l_started(self):
         return self.is_cliff_started(self.tof_front_l, self.prev_front_l_values, self.tof_front_r)

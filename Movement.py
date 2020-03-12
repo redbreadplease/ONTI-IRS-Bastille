@@ -34,7 +34,7 @@ class AppliedMovement(object):
 
 
 class MovementAlgorithms(AppliedMovement, SensorsController):
-    just_move_value = 511
+    just_move_value = 255
     outside_corner_movement_time = 0.1
     pre_cliff_time = 0.5
 
@@ -45,6 +45,7 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
     def do_align(self, get_first_dist, get_second_dist, move_to_wall, move_from_wall):
         while True:
             d1, d2 = get_first_dist(), get_second_dist()
+            print("d1: " + str(d1) + "  d2: " + str(d2))
             circle_err = self.get_align_circle_err(d1=d1, d2=d2)
             if self.does_side_sensors_difference_means_round_align(d1, d2):
                 self.move_counterclockwise(circle_err)
@@ -86,25 +87,33 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
         self.stop_move()
 
     def leave_front_l_around_corner(self):
+        print("leave_front_l_around_corner")
         self.leave_around_corner(self.is_wall_left_f, self.is_wall_left_b, self.do_left_align, self.move_straight)
 
     def leave_front_r_around_corner(self):
+        print("leave_front_r_around_corner")
         self.leave_around_corner(self.is_wall_right_f, self.is_wall_right_b, self.do_right_align, self.move_straight)
 
     def leave_right_f_around_corner(self):
+        print("leave_right_f_around_corner")
         self.leave_around_corner(self.is_wall_front_r, self.is_wall_front_l, self.do_front_align, self.move_right)
 
     def leave_right_b_around_corner(self):
+        print("leave_right_b_around_corner")
         self.leave_around_corner(self.is_wall_back_l, self.is_wall_back_r, self.do_back_align, self.move_right)
 
     def leave_back_r_around_corner(self):
+        print("leave_back_r_around_corner")
         self.leave_around_corner(self.is_wall_right_f, self.is_wall_right_b, self.do_right_align, self.move_back)
 
     def leave_back_l_around_corner(self):
+        print("leave_back_l_around_corner")
         self.leave_around_corner(self.is_wall_left_b, self.is_wall_left_f, self.do_left_align, self.move_back)
 
     def leave_left_b_around_corner(self):
+        print("leave_left_b_around_corner")
         self.leave_around_corner(self.is_wall_back_r, self.is_wall_back_l, self.do_back_align, self.move_left)
 
     def leave_left_f_around_corner(self):
+        print("leave_left_f_around_corner")
         self.leave_around_corner(self.is_wall_front_r, self.is_wall_front_l, self.do_front_align, self.move_right)

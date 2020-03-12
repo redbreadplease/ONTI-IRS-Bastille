@@ -5,7 +5,7 @@ class LogicAlgorithms(object):
 
     right_align_distance = 110
 
-    align_dist_deviation = 20
+    align_dist_deviation = 10
 
     min_cliff_difference = 150
 
