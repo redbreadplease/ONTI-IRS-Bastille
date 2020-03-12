@@ -5,7 +5,6 @@ rc = RobotController()
 print("Finished any_align function")
 
 mb = MapBuilder()
-
 rd = 0
 
 
