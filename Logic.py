@@ -1,7 +1,7 @@
 class LogicAlgorithms(object):
     p_coefficient = 1.5
 
-    min_round_react_align_value = 10
+    min_round_react_align_value = 20
 
     right_align_distance = 110
 
@@ -9,12 +9,12 @@ class LogicAlgorithms(object):
 
     min_cliff_difference = 150
 
-    wall_detection_distance = 150
+    wall_detection_distance = 170
 
     cliff_diff = 150
 
     min_react_wheels_value = 255
-    max_react_wheels_value = 800
+    max_react_wheels_value = 700
 
     def get_align_progressive_err(self, d):
         return \
@@ -33,7 +33,8 @@ class LogicAlgorithms(object):
         return mid_value < self.right_align_distance - self.align_dist_deviation
 
     def is_wall(self, d1, d2):
-        return self.get_mid_value(d1, d2) < self.wall_detection_distance
+        return (self.is_wall_by_dist(d1) or self.is_wall_by_dist(d2)) and self.get_mid_value(d1,
+                                                                                             d2) < self.wall_detection_distance
 
     def is_wall_by_dist(self, d):
         return d < self.wall_detection_distance

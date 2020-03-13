@@ -9,10 +9,10 @@ class SensorsChecker(object):
 
     min_cliff_value = 50
 
-    sensor_front_r_id, sensor_front_l_id = 12, 5
-    sensor_left_f_id, sensor_left_b_id = 11, 9
-    sensor_back_r_id, sensor_back_l_id = 18, 27
-    sensor_right_f_id, sensor_right_b_id = 13, 17
+    sensor_front_r_id, sensor_front_l_id = 13, 11
+    sensor_left_f_id, sensor_left_b_id = 5, 27
+    sensor_back_r_id, sensor_back_l_id = 17, 9
+    sensor_right_f_id, sensor_right_b_id = 12, 18
     tof_front_r, tof_front_l = VL53L0X.VL53L0X(address=0x2A), VL53L0X.VL53L0X(address=0x2B)
     tof_left_f, tof_left_b = VL53L0X.VL53L0X(address=0x2C), VL53L0X.VL53L0X(address=0x2D)
     tof_back_r, tof_back_l = VL53L0X.VL53L0X(address=0x2E), VL53L0X.VL53L0X(address=0x2F)
@@ -80,7 +80,7 @@ class SensorsChecker(object):
         queue.append(tof.get_distance())
         if len(queue) > self.sensors_values_queue_size:
             queue.remove(queue[0])
-        return sum(queue) / len(queue) + additive
+        return queue[0] + additive
 
     def get_front_r_dist(self):
         return self.get_dist(self.prev_front_r_values, self.tof_front_r, self.f_r_additive_dist)
