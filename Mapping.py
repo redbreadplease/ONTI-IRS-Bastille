@@ -81,6 +81,7 @@ class MapBuilder:
 
     def get_last_around_cells_states(self):
         self.map_build()
+        print("row: " + str(self.row) + "  column: " + str(self.col))
         return [self.map[self.row - 2][self.col] == '?' and not self.map[self.row - 1][self.col] == '|',
                 self.map[self.row][self.col - 2] == '?' and not self.map[self.row][self.col - 1] == '-',
                 self.map[self.row + 2][self.col] == '?' and not self.map[self.row + 1][self.col] == '|',

@@ -9,7 +9,7 @@ class LogicAlgorithms(object):
 
     min_cliff_difference = 150
 
-    wall_detection_distance = 170
+    wall_detection_distance = 300
 
     cliff_diff = 150
 
@@ -27,14 +27,13 @@ class LogicAlgorithms(object):
         return d1 - d2 > self.min_round_react_align_value
 
     def does_side_sensors_difference_means_go_in_wall_direction(self, mid_value):
-        return mid_value > self.right_align_distance + self.align_dist_deviation
+        return self.is_wall_by_dist(mid_value) and mid_value > self.right_align_distance + self.align_dist_deviation
 
     def does_side_sensors_difference_means_go_from_wall(self, mid_value):
         return mid_value < self.right_align_distance - self.align_dist_deviation
 
     def is_wall(self, d1, d2):
-        return (self.is_wall_by_dist(d1) or self.is_wall_by_dist(d2)) and self.get_mid_value(d1,
-                                                                                             d2) < self.wall_detection_distance
+        return self.get_mid_value(d1, d2) < self.wall_detection_distance
 
     def is_wall_by_dist(self, d):
         return d < self.wall_detection_distance

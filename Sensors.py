@@ -158,11 +158,12 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         if first_tof.get_distance() - first_queue[0] > self.min_cliff_value:
             return first_tof.get_distance() - first_queue[0] > self.min_cliff_value
         else:
-            return self.does_diff_mean_cliff(first_tof.get_distance(), second_tof.get_distance())
+            return self.does_diff_mean_cliff(first_tof.get_distance(), second_tof.get_distance()) \
+                   and self.does_diff_mean_cliff(first_tof.get_distance(), second_tof.get_distance())
 
     @staticmethod
     def is_first_dist_bigger_than_second(first_dists_queue, second_dists_queue):
-        return first_dists_queue[-1] > second_dists_queue[-1]
+        return sum(first_dists_queue) > sum(second_dists_queue)
 
     def is_dist_front_l_bigger_then_r(self):
         return self.is_first_dist_bigger_than_second(self.prev_front_l_values, self.prev_front_r_values)
@@ -213,7 +214,17 @@ class SensorsController(SensorsChecker, LogicAlgorithms):
         return self.is_cliff_started(self.tof_right_b, self.prev_right_b_values, self.tof_right_f)
 
     def get_walls_availability_array(self):
-        return [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
+        array = [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
+        for _ in range(3):
+            if self.is_wall_front():
+                array[0] = True
+            if self.is_wall_left():
+                array[1] = True
+            if self.is_wall_back():
+                array[2] = True
+            if self.is_wall_right():
+                array[3] = True
+        return array
 
     def clean_front_sensors_queue(self):
         self.prev_front_r_values, self.prev_front_l_values = list(), list()

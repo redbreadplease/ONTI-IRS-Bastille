@@ -8,7 +8,20 @@ rd = 0
 
 def choose_next_direction():
     global rd, rc, mb
+
+    print("Next dir: ")
+    try:
+        rd = int(input())
+    except ValueError:
+        print("Try again")
+        rd = int(input())
+
+    return
+    '''
     around_cells_discovering_state = mb.get_last_around_cells_states()
+
+    update_sensors_values()
+    update_map_builder()
 
     print("semen cells: " + str(around_cells_discovering_state))
     print("robot cells: " + str([rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()]))
@@ -29,6 +42,13 @@ def choose_next_direction():
     else:
         print("WHAT THE FUCK???")
         exit()
+    '''
+
+
+def update_sensors_values():
+    for _ in range(10):
+        for func in [rc.is_wall_front, rc.is_wall_left, rc.is_wall_back, rc.is_wall_right]:
+            func()
 
 
 def update_map_builder():
@@ -39,27 +59,29 @@ def update_map_builder():
 
 
 # the first map init
-mb.update(5, 0, [rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()])
+# update_sensors_values()
+# mb.update(5, 0, [rc.is_wall_front(), rc.is_wall_left(), rc.is_wall_back(), rc.is_wall_right()])
 
-while not mb.is_map_built():
+# while not mb.is_map_built():
+while True:
+    rc.while_state_move_left()
+    print("f")
+    exit()
+    update_sensors_values()
     print("Dir: " + str(rd))
     rc.do_any_align()
     print("Any align is done")
     if rd == 0:
         rc.while_state_move_straight()
-        update_map_builder()
         choose_next_direction()
     elif rd == 1:
         rc.while_state_move_left()
-        update_map_builder()
         choose_next_direction()
     elif rd == 2:
         rc.while_state_move_back()
-        update_map_builder()
         choose_next_direction()
     elif rd == 3:
         print(rc.while_state_move_right())
-        update_map_builder()
         choose_next_direction()
 
 print("YEAH")

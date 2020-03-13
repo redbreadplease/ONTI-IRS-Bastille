@@ -13,7 +13,7 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
         super(OpticalFlowController, self).__init__()
 
     def do_any_align(self):
-        walls = [self.is_wall_front(), self.is_wall_left(), self.is_wall_back(), self.is_wall_right()]
+        walls = self.get_walls_availability_array()
         aligns = [self.do_front_align, self.do_left_align, self.do_back_align, self.do_right_align]
         for i in range(4):
             if walls[i - 1] == walls[i]:
@@ -21,10 +21,12 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
                     aligns[i - 1]()
                     aligns[i]()
                 return
+        '''
         for i in range(4):
             if walls[i]:
                 aligns[i]()
                 return
+'''
 
     def handle_cliff(self, is_cliff_fading, is_wall_back_of_direction, move, leave_not_fading_cliff):
         if is_cliff_fading():
@@ -36,6 +38,7 @@ class RobotController(MovementAlgorithms, AppliedMovement, SensorsController, Op
         else:
             print("cliff is not fading")
             leave_not_fading_cliff()
+            time.sleep(0.2)
         self.stop_move()
 
     def while_state_move(self, clean_sensors_first, clean_sensors_second,

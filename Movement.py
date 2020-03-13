@@ -34,8 +34,8 @@ class AppliedMovement(object):
 
 
 class MovementAlgorithms(AppliedMovement, SensorsController):
-    just_move_value = 255
-    outside_corner_movement_time = 0.1
+    just_move_value = 600
+    outside_corner_movement_time = 0.4
     pre_cliff_time = 0.5
 
     def __init__(self):
@@ -76,13 +76,11 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
 
     def leave_around_corner(self, is_first_wall, is_second_wall, do_align, move):
         time.sleep(self.pre_cliff_time)
-        first_was, second_was, i = is_first_wall(), is_second_wall(), 0
-        while first_was == is_first_wall() and second_was == is_second_wall():
-            if i > 100:
-                do_align()
-                i = 0
+        first_was, second_was = is_first_wall(), is_second_wall()
+        while first_was == is_first_wall() and second_was == is_second_wall() \
+                and first_was == is_first_wall() and second_was == is_second_wall():
             move(self.just_move_value)
-            i += 1
+
         time.sleep(self.outside_corner_movement_time)
         self.stop_move()
 
@@ -116,4 +114,4 @@ class MovementAlgorithms(AppliedMovement, SensorsController):
 
     def leave_left_f_around_corner(self):
         print("leave_left_f_around_corner")
-        self.leave_around_corner(self.is_wall_front_r, self.is_wall_front_l, self.do_front_align, self.move_right)
+        self.leave_around_corner(self.is_wall_front_r, self.is_wall_front_l, self.do_front_align, self.move_left)
